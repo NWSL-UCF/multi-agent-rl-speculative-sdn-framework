@@ -1,0 +1,6 @@
+/venv/*
+*.pcap
+*.zip
+*.log
+/build/*
+*.pyc

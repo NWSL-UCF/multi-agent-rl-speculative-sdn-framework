@@ -1,0 +1,13 @@
+Speculative SDN:
+
+Requirements:
+- Python
+- wandb account
+
+Files:
+- script for the complete speculative SDN code.
+- script to generate all the experiments combination list to run in the cluster to save it later in text files format, 
+- script to run the experiments in the cluster and store the results in text files, 
+- script to store all the results in one excel sheet, 
+- script to read the results from the excel sheet for plots and tables, 
+

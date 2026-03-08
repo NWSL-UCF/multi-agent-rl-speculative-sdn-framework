@@ -1,0 +1,59 @@
+{
+    "expId": "srs",
+    "global_seed": 101,
+    "fresh_run": true,
+    "objective": "hitrate",
+    "params" : {
+        "tunable" : {
+            "agingfactor": 0.995,
+            "gamma": 0.9,
+            "LR": 0.5,
+            "rewardAgingFactor": 0.95,
+            "spatialReward": 0.75
+        },
+        "tuned" : {
+            "agingfactor": false,
+            "gamma": false,
+            "LR": false,
+            "rewardAgingFactor": false,
+            "spatialReward": false
+        },
+        "bounds" : {
+            "agingfactor": [0.5, 0.999],
+            "gamma": [0.5, 0.99],
+            "LR": [0.1, 0.9],
+            "rewardAgingFactor": [0.5, 0.99],
+            "spatialReward": [0.5, 0.99]
+        },
+        "other_params" : {
+            "numberofFlowsPerAgent": 10,
+            "tablesize": 70,
+            "ordering": "source",
+            "hidden_layers": 2,
+            "target_replace_iter": 100,
+            "LTI": 0.1,
+            "RTI": 0.01,
+            "LFUTimeInterval": 10,
+            "epsilon_start": 1.0,
+            "epsilon_end": 0.01,
+            "epsilon_decay": 0.995,
+            "memory_capacity": 500,
+            "batch_size": 32,
+            "mode": "speculativereactive",
+            "trace": [1, 2, 3],
+            "seed": [101, 103, 107],
+            "reset_age": 1.0,
+            "speculative_reset_age": 0.3,
+            "simulation_time": 600,
+            "device": "auto",
+            "pcap_base_path": "~/Pcap"
+        }
+    },
+    "outputs" : {
+        "speculative_hitrate": 77.0095953867425,
+        "speculativereactive_hitrate": 87.3600579357378,
+        "reactive_hitrate": 76.02567139355973,
+        "optimal_hitrate": 92.39071550742058,
+        "speculation_efficiency": 2501.2013813421613
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "price": [10, 20, 30, 40],
+    "battery_life": [20, 25, 30, 35],
+    "weight": [200, 205, 195],
+    "performance": ["light", "moderate", "heavy"]
+}

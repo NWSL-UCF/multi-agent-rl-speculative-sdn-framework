@@ -1,0 +1,16 @@
+{
+    "expId": "sim_stokes",
+    "jobDB": "jobs.csv",
+    "host": "0.0.0.0",
+    "dashboard_port": 5050,
+    "server_port": 5000,
+    "timeoutLimit": 300,
+    "cleanupInterval": 600,
+    "fresh_start": true,
+    "parameters": {
+        "param1": [1, 2, 4, 5],
+        "param2": ["rouf", "afaia", "abdur", "nawar"],
+        "param3": [10, 20, 90, 10],
+        "param4": [10.5, 10.35, 10.5]
+    }
+}
