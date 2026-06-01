@@ -41,6 +41,26 @@ class ReactiveOptimalSimulation:
         
         # Eviction tracking
         self.total_evictions = 0
+
+    def _flow_in_switch_table(self, flow_key):
+        """Check if a flow is present in the switch table"""
+        source, destination = flow_key
+        return (
+            (self.switch_table['Source'] == source) &
+            (self.switch_table['Destination'] == destination)
+        ).any()
+
+    def _remove_flow_from_switch_table(self, flow_key):
+        """Remove a flow from the switch table by Source/Destination"""
+        source, destination = flow_key
+        mask = (
+            (self.switch_table['Source'] == source) &
+            (self.switch_table['Destination'] == destination)
+        )
+        if mask.any():
+            self.switch_table = self.switch_table[~mask]
+            return True
+        return False
     
     def _precompute_future_packet_times(self, dataset, value):
         """Precompute when each flow will have its next packet"""
@@ -69,9 +89,9 @@ class ReactiveOptimalSimulation:
         if flow_key not in self.flow_future_packets:
             return None
         
-        # Find the next packet after current_time within simulation duration
+        # Find the next packet after current_time
         for idx, packet_time in self.flow_future_packets[flow_key]:
-            if packet_time > current_time and packet_time <= self.args.simulation_time:
+            if packet_time > current_time:
                 return packet_time
         
         return None  # No more packets for this flow
@@ -99,8 +119,7 @@ class ReactiveOptimalSimulation:
     
     def _evict_flow(self, flow_key):
         """Evict a flow from the switch table"""
-        if flow_key in self.switch_table.index:
-            self.switch_table = self.switch_table.drop(flow_key)
+        if self._remove_flow_from_switch_table(flow_key):
             self.total_evictions += 1
             if self.logger:
                 self.logger.info(f"Reactive optimal eviction: Removed flow {flow_key}")
@@ -114,9 +133,12 @@ class ReactiveOptimalSimulation:
             'Destination': flow_data['Destination'],
             'flow_age': 1.0,
             'is_speculative': False,
-        }], index=[flow_key])
+        }])
         
-        self.switch_table = pd.concat([self.switch_table, new_flow], ignore_index=False)
+        self.switch_table = pd.concat([self.switch_table, new_flow], ignore_index=True)
+        self.switch_table = self.switch_table.drop_duplicates(
+            subset=['Source', 'Destination'], keep='last'
+        )
         
         # Update controller table
         if flow_key in self.controller_table.index:
@@ -191,7 +213,7 @@ class ReactiveOptimalSimulation:
             
             # Check if packet hits in switch table
             flow_key = (packet_data['Source'], packet_data['Destination'])
-            hit = flow_key in self.switch_table.index
+            hit = self._flow_in_switch_table(flow_key)
             
             if hit:
                 # Packet hit - update flow information

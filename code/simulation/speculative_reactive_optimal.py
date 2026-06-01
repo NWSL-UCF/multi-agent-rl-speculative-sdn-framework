@@ -9,6 +9,7 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
         self.trace_counter = 0
         self.total_proactive_removals = 0
         self.total_speculative_installs = 0
+        self.lti_maintenance_counter = 0
 
     def _add_flow_to_table(self, flow_data, is_speculative=False):
         """Add a new flow to the switch table"""
@@ -19,13 +20,29 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
             'Destination': flow_data['Destination'],
             'flow_age': self.args.speculative_reset_age if is_speculative else 1.0,
             'is_speculative': is_speculative,
-        }], index=[flow_key])
+        }])
 
-        self.switch_table = pd.concat([self.switch_table, new_flow], ignore_index=False)
+        self.switch_table = pd.concat([self.switch_table, new_flow], ignore_index=True)
+        self.switch_table = self.switch_table.drop_duplicates(
+            subset=['Source', 'Destination'], keep='last'
+        )
 
         if not is_speculative and flow_key in self.controller_table.index:
             self.controller_table.loc[flow_key, 'miss_count'] += 1
             self.controller_table.loc[flow_key, 'total_packet_count'] += 1
+
+    def _check_packet_match(self, flow_key):
+        """Check if packet matches a flow in the switch table"""
+        source, destination = flow_key
+        matches = self.switch_table[
+            (self.switch_table['Source'] == source) &
+            (self.switch_table['Destination'] == destination)
+        ]
+        if matches.empty:
+            return False, False
+
+        is_speculative = bool(matches.iloc[-1]['is_speculative'])
+        return True, not is_speculative
 
     def _handle_packet_miss(self, packet_data, packet_time):
         """Handle a packet miss with reactive optimal flow management"""
@@ -45,14 +62,6 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
         self.flow_packet_count[flow_key] += 1
 
         self.data_collector.record_flow_installation(packet_data, is_speculative=False)
-
-    def _check_packet_match(self, flow_key):
-        """Check if packet matches a flow in the switch table"""
-        if flow_key not in self.switch_table.index:
-            return False, False
-
-        is_speculative = bool(self.switch_table.loc[flow_key, 'is_speculative'])
-        return True, not is_speculative
 
     def _process_single_packet(self, dataset, value):
         """Process a single packet with reactive optimal and speculative hit tracking"""
@@ -78,10 +87,16 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
 
         self.packet_counter += 1
 
+        if packet_time - self.last_metrics_time >= self.metrics_interval:
+            self._collect_lti_metrics(self.lti_start_time, packet_time)
+            self.lti_start_time = packet_time
+            self.last_metrics_time = packet_time
+
     def _remove_flows_without_future_packets(self, current_time):
         """Remove SFT entries for flows with no future packets within simulation_time"""
         flows_to_remove = []
-        for flow_key in list(self.switch_table.index):
+        for _, row in self.switch_table.iterrows():
+            flow_key = (row['Source'], row['Destination'])
             if self._get_next_packet_time(flow_key, current_time) is None:
                 flows_to_remove.append(flow_key)
 
@@ -101,7 +116,7 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
 
         candidates = []
         for flow_key in self.flow_future_packets:
-            if flow_key in self.switch_table.index:
+            if self._flow_in_switch_table(flow_key):
                 continue
             next_time = self._get_next_packet_time(flow_key, current_time)
             if next_time is not None:
@@ -172,16 +187,14 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
 
         self._precompute_future_packet_times(dataset, value)
 
-        lti_start_time = float(value.iloc[0].iloc[0])
-        lti_start_packet = 0
+        self.lti_start_time = 0.0
+        self.last_metrics_time = 0.0
+        lti_maintenance_start_packet = 0
         self.trace_counter = 0
-        self.lti_start_time = lti_start_time
 
         while True:
             while True:
                 if self.packet_counter >= len(value):
-                    current_time = self._last_processed_time(value)
-                    self.data_collector.record_lti_metrics(lti_start_time, current_time, self.switch_table)
                     if self.logger:
                         self.logger.info(
                             f"Speculative reactive optimal simulation completed. "
@@ -198,8 +211,6 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
                     break
 
                 if self._should_stop_simulation(value):
-                    current_time = self._last_processed_time(value)
-                    self.data_collector.record_lti_metrics(lti_start_time, current_time, self.switch_table)
                     if self.logger:
                         self.logger.info(
                             f"Speculative reactive optimal simulation completed. "
@@ -213,6 +224,7 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
             current_time = self._last_processed_time(value)
             self._perform_lti_maintenance(current_time)
 
+            self.lti_maintenance_counter += 1
             if self.logger:
                 speculative_flows = sum(
                     1 for _, flow in self.switch_table.iterrows()
@@ -220,16 +232,13 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
                 )
                 reactive_flows = len(self.switch_table) - speculative_flows
                 self.logger.lti_info(
-                    self.data_collector.current_lti,
-                    f"Completed LTI. Packets: {self.packet_counter - lti_start_packet}, "
+                    self.lti_maintenance_counter,
+                    f"Completed LTI. Packets: {self.packet_counter - lti_maintenance_start_packet}, "
                     f"Switch table size: {len(self.switch_table)}, "
                     f"Speculative flows: {speculative_flows}, "
                     f"Reactive flows: {reactive_flows}, "
                     f"Evicted flows: {self.data_collector.lti_evicted_flows}",
                 )
 
-            self.data_collector.record_lti_metrics(lti_start_time, current_time, self.switch_table)
-
-            lti_start_time = current_time
-            lti_start_packet = self.packet_counter
+            lti_maintenance_start_packet = self.packet_counter
             self.trace_counter = self.packet_counter

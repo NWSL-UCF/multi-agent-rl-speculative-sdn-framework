@@ -66,7 +66,7 @@ def parse_arguments():
                        help='Base path for pcap CSV data files')
     
     # Output Configuration
-    parser.add_argument('--base_path', type=str, default='./results_speculativereactive',
+    parser.add_argument('--base_path', type=str, default='./results_speculativereactiveoptimal',
                        help='Directory to save simulation results')
     
     # Simulation Constants
