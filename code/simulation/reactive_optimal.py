@@ -69,9 +69,9 @@ class ReactiveOptimalSimulation:
         if flow_key not in self.flow_future_packets:
             return None
         
-        # Find the next packet after current_time
+        # Find the next packet after current_time within simulation duration
         for idx, packet_time in self.flow_future_packets[flow_key]:
-            if packet_time > current_time:
+            if packet_time > current_time and packet_time <= self.args.simulation_time:
                 return packet_time
         
         return None  # No more packets for this flow
@@ -112,7 +112,8 @@ class ReactiveOptimalSimulation:
         new_flow = pd.DataFrame([{
             'Source': flow_data['Source'],
             'Destination': flow_data['Destination'],
-            'flow_age': 1.0
+            'flow_age': 1.0,
+            'is_speculative': False,
         }], index=[flow_key])
         
         self.switch_table = pd.concat([self.switch_table, new_flow], ignore_index=False)

@@ -13,6 +13,7 @@ from simulation.reactive import ReactiveSimulation
 from simulation.speculative import SpeculativeSimulation
 from simulation.speculativereactive import SpeculativeReactiveSimulation
 from simulation.reactive_optimal import ReactiveOptimalSimulation
+from simulation.speculative_reactive_optimal import SpeculativeReactiveOptimalSimulation
 from util.data_collector import DataCollector
 from util.logger import SDNLogger
 
@@ -42,8 +43,8 @@ def parse_arguments():
     
     # SDN Mode
     parser.add_argument('--mode', type=str, default='speculativereactive', 
-                       choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal'],
-                       help='SDN mode: reactive, speculative, speculativereactive, or reactiveoptimal')
+                       choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal', 'speculativereactiveoptimal'],
+                       help='SDN mode: reactive, speculative, speculativereactive, reactiveoptimal, or speculativereactiveoptimal')
     
     # Device Configuration
     parser.add_argument('--device', type=str, default='auto', 
@@ -196,6 +197,16 @@ def main():
                                           priority_policy, 
                                           reward_function, 
                                           data_collector, 
+                                          logger)
+            simulation.run(dataset, value)
+
+        elif args.mode == 'speculativereactiveoptimal':
+            simulation = SpeculativeReactiveOptimalSimulation(args,
+                                          controller_table,
+                                          switch_table,
+                                          priority_policy,
+                                          reward_function,
+                                          data_collector,
                                           logger)
             simulation.run(dataset, value)
         
