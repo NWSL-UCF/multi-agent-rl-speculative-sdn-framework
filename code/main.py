@@ -12,7 +12,7 @@ from core.multiagent_dqn import MultiAgentDQN
 from simulation.reactive import ReactiveSimulation
 from simulation.speculative import SpeculativeSimulation
 from simulation.speculativereactive import SpeculativeReactiveSimulation
-from simulation.optimal import OptimalSimulation
+from simulation.reactive_optimal import ReactiveOptimalSimulation
 from util.data_collector import DataCollector
 from util.logger import SDNLogger
 
@@ -42,8 +42,8 @@ def parse_arguments():
     
     # SDN Mode
     parser.add_argument('--mode', type=str, default='speculativereactive', 
-                       choices=['reactive', 'speculative', 'speculativereactive', 'optimal'],
-                       help='SDN mode: reactive, speculative, speculativereactive, or optimal')
+                       choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal'],
+                       help='SDN mode: reactive, speculative, speculativereactive, or reactiveoptimal')
     
     # Device Configuration
     parser.add_argument('--device', type=str, default='auto', 
@@ -188,9 +188,9 @@ def main():
                                                        logger)
             simulation.run(dataset, value)
             
-        elif args.mode == 'optimal':
-            # Optimal mode uses future information for perfect eviction decisions
-            simulation = OptimalSimulation(args, 
+        elif args.mode == 'reactiveoptimal':
+            # Reactive optimal mode uses future information for perfect eviction decisions
+            simulation = ReactiveOptimalSimulation(args, 
                                           controller_table, 
                                           switch_table, 
                                           priority_policy, 

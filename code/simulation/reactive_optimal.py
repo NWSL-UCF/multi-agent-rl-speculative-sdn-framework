@@ -3,7 +3,7 @@ import numpy as np
 from collections import defaultdict, deque
 import math
 
-class OptimalSimulation:
+class ReactiveOptimalSimulation:
     def __init__(self, args, controller_table, switch_table, priority_policy, reward_function, data_collector, logger=None):
         self.args = args
         self.controller_table = controller_table
@@ -30,7 +30,7 @@ class OptimalSimulation:
         self.lti_start_time = 0.0
         self.lti_end_time = 0.0
         
-        # Flow tracking for optimal eviction
+        # Flow tracking for reactive optimal eviction
         self.flow_next_packet_time = {}  # Maps flow to next packet arrival time
         self.flow_last_packet_time = {}  # Maps flow to last packet arrival time
         self.flow_packet_count = defaultdict(int)  # Count packets per flow
@@ -45,7 +45,7 @@ class OptimalSimulation:
     def _precompute_future_packet_times(self, dataset, value):
         """Precompute when each flow will have its next packet"""
         if self.logger:
-            self.logger.info("Precomputing future packet times for optimal eviction...")
+            self.logger.info("Precomputing future packet times for reactive optimal eviction...")
         
         # Group packets by flow and time
         flow_packets = defaultdict(list)
@@ -103,7 +103,7 @@ class OptimalSimulation:
             self.switch_table = self.switch_table.drop(flow_key)
             self.total_evictions += 1
             if self.logger:
-                self.logger.info(f"Optimal eviction: Removed flow {flow_key}")
+                self.logger.info(f"Reactive optimal eviction: Removed flow {flow_key}")
     
     def _add_flow_to_table(self, flow_data):
         """Add a new flow to the switch table"""
@@ -123,12 +123,12 @@ class OptimalSimulation:
             self.controller_table.loc[flow_key, 'total_packet_count'] += 1
     
     def _handle_packet_miss(self, packet_data, packet_time):
-        """Handle a packet miss with optimal flow management"""
+        """Handle a packet miss with reactive optimal flow management"""
         flow_key = (packet_data['Source'], packet_data['Destination'])
         
         # Check if table is full
         if len(self.switch_table) >= self.table_size:
-            # Find the optimal flow to evict
+            # Find the reactive optimal flow to evict
             flow_to_evict = self._find_flow_to_evict()
             if flow_to_evict:
                 self._evict_flow(flow_to_evict)
@@ -165,9 +165,9 @@ class OptimalSimulation:
         self._update_flow_next_packet_time(flow_key, packet_time)
     
     def run(self, dataset, value):
-        """Main simulation loop for optimal mode"""
+        """Main simulation loop for reactive optimal mode"""
         if self.logger:
-            self.logger.info("Starting optimal SDN simulation with future information...")
+            self.logger.info("Starting reactive optimal SDN simulation with future information...")
         
         # Precompute future packet times
         self._precompute_future_packet_times(dataset, value)
@@ -182,10 +182,10 @@ class OptimalSimulation:
             packet_time = float(value.iloc[idx].iloc[0])
             self.current_time = packet_time
             
-            # Stop simulation at 200 seconds
+            # Stop simulation at configured duration
             if packet_time > self.args.simulation_time:
                 if self.logger:
-                    self.logger.info(f"Stopping simulation at {packet_time:.2f} seconds (200s limit reached)")
+                    self.logger.info(f"Stopping simulation at {packet_time:.2f} seconds (simulation_time limit reached)")
                 break
             
             # Check if packet hits in switch table
@@ -197,12 +197,9 @@ class OptimalSimulation:
                 self._handle_packet_hit(packet_data, packet_time)
                 self.data_collector.record_packet_processing(packet_time, True, is_speculative=False, is_reactive_hit=True)
             else:
-                # Packet miss - install flow optimally
+                # Packet miss - install flow with reactive optimal eviction
                 self._handle_packet_miss(packet_data, packet_time)
                 self.data_collector.record_packet_processing(packet_time, False, is_speculative=False)
-            
-            # Update switch table flow ages
-            self.switch_table['flow_age'] += self.reactive_time_interval
             
             # Collect metrics at regular intervals
             if packet_time - self.last_metrics_time >= self.metrics_interval:
@@ -214,8 +211,8 @@ class OptimalSimulation:
             self.packet_counter += 1
         
         if self.logger:
-            self.logger.info(f"Optimal simulation completed. Processed {self.packet_counter} packets.")
-            self.logger.info(f"Total optimal evictions: {self.total_evictions}")
+            self.logger.info(f"Reactive optimal simulation completed. Processed {self.packet_counter} packets.")
+            self.logger.info(f"Total reactive optimal evictions: {self.total_evictions}")
     
     def _collect_lti_metrics(self, lti_start_time, lti_end_time):
         """Collect Learning Time Interval metrics"""

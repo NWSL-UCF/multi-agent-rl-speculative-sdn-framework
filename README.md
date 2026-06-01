@@ -38,7 +38,7 @@ python main.py --mode speculativereactive --trace 1 --seed 101 \
 
 | Argument | Default | Description |
 |---|---|---|
-| `--mode` | `speculativereactive` | `reactive`, `speculative`, `speculativereactive`, `optimal` |
+| `--mode` | `speculativereactive` | `reactive`, `speculative`, `speculativereactive`, `reactiveoptimal` |
 | `--trace` | `1` | Trace file to use: `1`, `2`, or `3` |
 | `--simulation_time` | `20` | Simulation duration in seconds |
 | `--tablesize` | `70` | Switch flow table size |
@@ -57,7 +57,7 @@ python main.py --mode speculativereactive --trace 1 --seed 101 \
 - **`reactive`** — baseline; installs rules only after a flow miss
 - **`speculative`** — DQN agents pre-install rules for predicted flows
 - **`speculativereactive`** — combines both approaches (recommended)
-- **`optimal`** — oracle benchmark using future knowledge
+- **`reactiveoptimal`** — reactive install-on-miss with oracle eviction using future knowledge
 
 ---
 
@@ -74,7 +74,7 @@ code/
 │   ├── reactive.py
 │   ├── speculative.py
 │   ├── speculativereactive.py
-│   └── optimal.py
+│   └── reactive_optimal.py
 └── util/
     ├── data_loader.py
     ├── data_collector.py
