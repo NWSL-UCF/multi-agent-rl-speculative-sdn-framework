@@ -9,3 +9,4 @@ requests
 bloom-filter
 mmh3
 bitarray
+jd-worker

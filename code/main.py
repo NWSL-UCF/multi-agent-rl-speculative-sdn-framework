@@ -4,6 +4,8 @@ import torch
 import sys
 import time
 
+from jd import jd_job_dir, jd_upload
+
 # Import modular components
 from util.data_loader import DataLoader
 from core.priority_policy import PriorityPolicy
@@ -16,6 +18,15 @@ from simulation.reactive_optimal import ReactiveOptimalSimulation
 from simulation.speculative_reactive_optimal import SpeculativeReactiveOptimalSimulation
 from util.data_collector import DataCollector
 from util.logger import SDNLogger
+
+
+def upload_job_outputs(job_dir, logger):
+    """Upload all generated files to the jd server after the simulation."""
+    for path in sorted(job_dir.iterdir()):
+        if path.is_file():
+            jd_upload(path)
+            logger.info(f"Uploaded to job server: {path.name}")
+
 
 def parse_arguments():
     """Parse command line arguments"""
@@ -62,7 +73,7 @@ def parse_arguments():
     
     # Data Path Configuration
     parser.add_argument('--pcap_base_path', type=str, 
-                       default='/home/rouf/data/raw/Pcap',
+                       default='./Pcap',
                        help='Base path for pcap CSV data files')
     
     # Output Configuration
@@ -83,6 +94,10 @@ def main():
     
     # Parse arguments
     args = parse_arguments()
+
+    job_dir = jd_job_dir()
+    job_dir.mkdir(parents=True, exist_ok=True)
+    args.base_path = str(job_dir)
     
     # Set random seed for reproducibility
     np.random.seed(args.seed)
@@ -125,6 +140,7 @@ def main():
     
     # Log simulation start
     logger.simulation_start(args.mode, args.tablesize, args.trace)
+    logger.info(f"Job directory: {job_dir}")
     logger.info(f"Pcap base path: {args.pcap_base_path}")
     logger.info(f"Output directory: {args.base_path}")
     
@@ -219,6 +235,9 @@ def main():
         
         # Save results
         data_collector.save_results()
+
+        # Upload results to JobDistributor
+        upload_job_outputs(job_dir, logger)
         
         # Log final metrics
         final_metrics = data_collector.get_final_metrics()
