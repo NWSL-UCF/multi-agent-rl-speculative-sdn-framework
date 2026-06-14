@@ -73,7 +73,7 @@ def parse_arguments():
     
     # Data Path Configuration
     parser.add_argument('--pcap_base_path', type=str, 
-                       default='./Pcap',
+                       default='./../Pcap',
                        help='Base path for pcap CSV data files')
     
     # Output Configuration
@@ -236,8 +236,7 @@ def main():
         # Save results
         data_collector.save_results()
 
-        # Upload results to JobDistributor
-        upload_job_outputs(job_dir, logger)
+        
         
         # Log final metrics
         final_metrics = data_collector.get_final_metrics()
@@ -245,13 +244,16 @@ def main():
         
         # Log total execution time
         logger.info(f"Total execution time: {total_wall_clock_time:.2f} seconds")
+
+        # Upload results to JobDistributor
+        upload_job_outputs(job_dir, logger)
         
     except FileNotFoundError as e:
         logger.error_with_troubleshooting(str(e))
         sys.exit(1)
     except Exception as e:
         logger.unexpected_error(str(e))
-        import traceback
+        import tracebackx
         traceback.print_exc()
         sys.exit(1)
 
