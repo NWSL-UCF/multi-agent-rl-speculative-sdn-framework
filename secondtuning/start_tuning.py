@@ -240,11 +240,11 @@ def unzip_and_extract_metrics(job_ids, objective):
                 
                 # Extract metric based on objective
                 if objective == "hitrate":
-                    metric = summary.get("temporal_hit_rate", summary.get("overall_hit_rate", 0))
+                    metric = summary.get("hitrate", summary.get("temporal_hit_rate", summary.get("overall_hit_rate", 0)))
                 elif objective == "se":
                     metric = summary.get("speculation_efficiency", 0)
                 else:
-                    metric = summary.get("temporal_hit_rate", 0)
+                    metric = summary.get("hitrate", summary.get("temporal_hit_rate", 0))
                 
                 metrics.append(metric)
                 logger.info(f"Job {job_id}: {objective} = {metric}")

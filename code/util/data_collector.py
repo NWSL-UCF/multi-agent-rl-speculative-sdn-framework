@@ -288,53 +288,59 @@ class DataCollector:
             json.dump(args_dict, f, indent=2)
         if self.logger:
             self.logger.file_saved("Arguments", 1)
+
+    def _compute_summary_hit_and_speculation_metrics(self):
+        """Compute aggregate hit rate and speculation efficiency metrics for summary."""
+        num_lti = len(self.lti_metrics_data)
+        hitrate = 0.0
+        speculation_efficiency = 0.0
+        average_speculation_efficiency = 0.0
+
+        if num_lti > 0:
+            hitrate = sum(m['hit_rate'] for m in self.lti_metrics_data) / num_lti
+            average_speculation_efficiency = (
+                sum(m['speculation_efficiency'] for m in self.lti_metrics_data) / num_lti
+            )
+
+            speculative_hits = sum(m.get('speculative_hits', 0) for m in self.lti_metrics_data)
+            reactive_hits = sum(m.get('reactive_hits', 0) for m in self.lti_metrics_data)
+
+            speculation_rate_sum = 0.0
+            for m in self.lti_metrics_data:
+                total_flows = m.get('total_flows', 0)
+                if total_flows > 0:
+                    speculation_rate_sum += m.get('speculative_flows', 0) / total_flows
+
+            avg_speculation_rate = speculation_rate_sum / num_lti
+            if speculative_hits > 0 and reactive_hits > 0 and avg_speculation_rate > 0:
+                speculation_efficiency = (
+                    (speculative_hits / reactive_hits) / avg_speculation_rate
+                )
+
+        return {
+            'hitrate': hitrate,
+            'speculation_efficiency': speculation_efficiency,
+            'average_speculation_efficiency': average_speculation_efficiency,
+        }
     
     def _save_summary(self):
         """Save summary statistics"""
-        # Calculate speculation efficiency for speculative modes
-        speculation_efficiency = 0.0
-        if self.total_speculative_flows > 0:
-            # Calculate total speculative and reactive hits from LTI metrics
-            speculative_hits = 0
-            reactive_hits = 0
-            for lti_metric in self.lti_metrics_data:
-                if 'speculative_hits' in lti_metric:
-                    speculative_hits += lti_metric['speculative_hits']
-                if 'reactive_hits' in lti_metric:
-                    reactive_hits += lti_metric['reactive_hits']
-            
-            # Calculate using new formula: (speculative_hit_count/reactive_hit_count)/(speculative_flows_count/total_flows_count)
-            total_flows_installed = self.total_speculative_flows + self.total_reactive_flows
-            if speculative_hits > 0 and reactive_hits > 0 and total_flows_installed > 0:
-                speculation_efficiency = (speculative_hits / reactive_hits) / (self.total_speculative_flows / total_flows_installed)
-                # Multiply by total number of LTI entries
-                speculation_efficiency *= len(self.lti_metrics_data)
-        
-        # Convert simulation duration to hour:min:sec format
+        aggregate_metrics = self._compute_summary_hit_and_speculation_metrics()
+
         def seconds_to_hms(seconds):
             """Convert seconds to hour:min:sec format"""
             if seconds <= 0:
                 return "00:00:00"
-            
+
             hours = int(seconds // 3600)
             minutes = int((seconds % 3600) // 60)
             secs = int(seconds % 60)
-            
+
             return f"{hours:02d}:{minutes:02d}:{secs:02d}"
-        
-        # Calculate total run time
-        total_run_time_seconds = self.current_time
-        total_run_time_hms = seconds_to_hms(total_run_time_seconds)
-        
-        # Calculate wall-clock time in HH:MM:SS format
+
+        total_run_time_hms = seconds_to_hms(self.current_time)
         wall_clock_hms = seconds_to_hms(self.total_wall_clock_time)
-        
-        # Calculate temporal hit rate (average of all LTI hit rates)
-        temporal_hit_rate = 0.0
-        if self.lti_metrics_data:
-            total_hit_rate = sum(lti_metric['hit_rate'] for lti_metric in self.lti_metrics_data)
-            temporal_hit_rate = total_hit_rate / len(self.lti_metrics_data)
-        
+
         summary = {
             'total_packets': self.total_packets,
             'total_hits': self.total_hits,
@@ -342,9 +348,10 @@ class DataCollector:
             'total_speculative_flows': self.total_speculative_flows,
             'total_reactive_flows': self.total_reactive_flows,
             'overall_hit_rate': (self.total_hits / max(1, self.total_packets)) * 100,
-            'temporal_hit_rate': temporal_hit_rate,
+            'hitrate': aggregate_metrics['hitrate'],
             'overall_miss_rate': (self.total_misses / max(1, self.total_packets)) * 100,
-            'speculation_efficiency': speculation_efficiency,
+            'speculation_efficiency': aggregate_metrics['speculation_efficiency'],
+            'average_speculation_efficiency': aggregate_metrics['average_speculation_efficiency'],
             'simulation_duration_seconds': self.current_time,
             'total_run_time': total_run_time_hms,
             'wall_clock_time_seconds': self.total_wall_clock_time,
@@ -352,48 +359,26 @@ class DataCollector:
             'total_lti_intervals': self.current_lti,
             'timestamp': datetime.now().isoformat()
         }
-        
+
         with open(os.path.join(self.output_dir, "summary.json"), 'w') as f:
             json.dump(summary, f, indent=2)
         if self.logger:
             self.logger.file_saved("Summary", 1)
-    
+
     def get_final_metrics(self):
         """Get final performance metrics"""
-        # Calculate speculation efficiency for speculative modes
-        speculation_efficiency = 0.0
-        if self.total_speculative_flows > 0:
-            # Calculate total speculative and reactive hits from LTI metrics
-            speculative_hits = 0
-            reactive_hits = 0
-            for lti_metric in self.lti_metrics_data:
-                if 'speculative_hits' in lti_metric:
-                    speculative_hits += lti_metric['speculative_hits']
-                if 'reactive_hits' in lti_metric:
-                    reactive_hits += lti_metric['reactive_hits']
-            
-            # Calculate using new formula: (speculative_hit_count/reactive_hit_count)/(speculative_flows_count/total_flows_count)
-            total_flows_installed = self.total_speculative_flows + self.total_reactive_flows
-            if speculative_hits > 0 and reactive_hits > 0 and total_flows_installed > 0:
-                speculation_efficiency = (speculative_hits / reactive_hits) / (self.total_speculative_flows / total_flows_installed)
-                # Multiply by total number of LTI entries
-                speculation_efficiency *= len(self.lti_metrics_data)
-        
-        # Calculate temporal hit rate (average of all LTI hit rates)
-        temporal_hit_rate = 0.0
-        if self.lti_metrics_data:
-            total_hit_rate = sum(lti_metric['hit_rate'] for lti_metric in self.lti_metrics_data)
-            temporal_hit_rate = total_hit_rate / len(self.lti_metrics_data)
-        
+        aggregate_metrics = self._compute_summary_hit_and_speculation_metrics()
+
         return {
             'total_packets': self.total_packets,
             'total_hits': self.total_hits,
             'total_misses': self.total_misses,
             'hit_rate': (self.total_hits / max(1, self.total_packets)) * 100,
-            'temporal_hit_rate': temporal_hit_rate,
+            'hitrate': aggregate_metrics['hitrate'],
             'miss_rate': (self.total_misses / max(1, self.total_packets)) * 100,
             'total_speculative_flows': self.total_speculative_flows,
             'total_reactive_flows': self.total_reactive_flows,
-            'speculation_efficiency': speculation_efficiency,
+            'speculation_efficiency': aggregate_metrics['speculation_efficiency'],
+            'average_speculation_efficiency': aggregate_metrics['average_speculation_efficiency'],
             'simulation_duration': self.current_time
         }

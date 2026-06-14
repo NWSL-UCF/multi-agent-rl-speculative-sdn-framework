@@ -91,6 +91,8 @@ class SDNLogger:
         self.logger.info(f"Total Hits: {final_metrics['total_hits']:,}")
         self.logger.info(f"Total Misses: {final_metrics['total_misses']:,}")
         self.logger.info(f"Hit Rate: {final_metrics['hit_rate']:.2f}%")
+        if 'hitrate' in final_metrics:
+            self.logger.info(f"Average Hit Rate (per LTI): {final_metrics['hitrate']:.2f}%")
         self.logger.info(f"Miss Rate: {final_metrics['miss_rate']:.2f}%")
         self.logger.info(f"Simulation Duration: {final_metrics['simulation_duration']:.2f} seconds")
         
@@ -98,6 +100,11 @@ class SDNLogger:
             self.logger.info(f"Speculative Flows: {final_metrics['total_speculative_flows']:,}")
             if 'speculation_efficiency' in final_metrics:
                 self.logger.info(f"Speculation Efficiency: {final_metrics['speculation_efficiency']:.2f}")
+            if 'average_speculation_efficiency' in final_metrics:
+                self.logger.info(
+                    f"Average Speculation Efficiency (per LTI): "
+                    f"{final_metrics['average_speculation_efficiency']:.2f}"
+                )
         
         if 'total_reactive_flows' in final_metrics and final_metrics['total_reactive_flows'] > 0:
             self.logger.info(f"Reactive Flows: {final_metrics['total_reactive_flows']:,}")
