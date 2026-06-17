@@ -110,7 +110,7 @@ class SpeculativeReactiveSimulation:
             self.data_collector.record_packet_processing(current_time, was_hit=True, is_speculative=True, is_reactive_hit=is_reactive_hit)
         else:
             self._handle_packet_miss(packet_data, value)
-            # Record miss
+            # Record mi ss
             self.data_collector.record_packet_processing(current_time, was_hit=False, is_speculative=True)
         
         self.packet_counter += 1

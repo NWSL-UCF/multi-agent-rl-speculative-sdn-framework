@@ -3,8 +3,12 @@ import numpy as np
 import torch
 import sys
 import time
+from pathlib import Path
 
-from jd import jd_job_dir, jd_upload
+ENABLE_JD = False
+
+if ENABLE_JD:
+    from jd import jd_job_dir, jd_upload
 
 # Import modular components
 from util.data_loader import DataLoader
@@ -22,6 +26,8 @@ from util.logger import SDNLogger
 
 def upload_job_outputs(job_dir, logger):
     """Upload all generated files to the jd server after the simulation."""
+    if not ENABLE_JD:
+        return
     for path in sorted(job_dir.iterdir()):
         if path.is_file():
             jd_upload(path)
@@ -38,22 +44,22 @@ def parse_arguments():
     parser.add_argument('--epsilon_end', type=float, default=0.01, help='Final epsilon value for exploitation')
     parser.add_argument('--epsilon_decay', type=float, default=0.995, help='Epsilon decay rate per LTI')
     parser.add_argument('--gamma', type=float, default=0.9, help='Discount factor gamma')
-    parser.add_argument('--target_replace_iter', type=int, default=5, help='Target network replacement interval')
-    parser.add_argument('--memory_capacity', type=int, default=50, help='Memory capacity for experience replay')
-    parser.add_argument('--LR', type=float, default=0.75, help='Learning rate')
-    parser.add_argument('--hidden_layers', type=int, default=1, help='Number of hidden layers in DQN')
+    parser.add_argument('--target_replace_iter', type=int, default=100, help='Target network replacement interval')
+    parser.add_argument('--memory_capacity', type=int, default=500, help='Memory capacity for experience replay')
+    parser.add_argument('--LR', type=float, default=0.5, help='Learning rate')
+    parser.add_argument('--hidden_layers', type=int, default=2, help='Number of hidden layers in DQN')
     parser.add_argument('--hidden_layer_size', type=int, default=None, help='Size of hidden layers (None: use current implementation, int: uniform size for all hidden layers)')
-    parser.add_argument('--batch_size', type=int, default=64, help='Batch size for experience replay')
+    parser.add_argument('--batch_size', type=int, default=32, help='Batch size for experience replay')
     
     # Simulation Parameters
     parser.add_argument('--tablesize', type=int, default=70, help='Switch table size')
     parser.add_argument('--LFUTimeInterval', type=int, default=10, help='LFU time interval')
     parser.add_argument('--agingfactor', type=float, default=0.995, help='Aging factor')
-    parser.add_argument('--rewardAgingFactor', type=float, default=0.9, help='Reward aging factor')
-    parser.add_argument('--spatialReward', type=float, default=0.9, help='Spatial reward factor')
+    parser.add_argument('--rewardAgingFactor', type=float, default=0.95, help='Reward aging factor')
+    parser.add_argument('--spatialReward', type=float, default=0.75, help='Spatial reward factor')
     
     # SDN Mode
-    parser.add_argument('--mode', type=str, default='speculativereactive', 
+    parser.add_argument('--mode', type=str, default='reactive', 
                        choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal', 'speculativereactiveoptimal'],
                        help='SDN mode: reactive, speculative, speculativereactive, reactiveoptimal, or speculativereactiveoptimal')
     
@@ -77,13 +83,13 @@ def parse_arguments():
                        help='Base path for pcap CSV data files')
     
     # Output Configuration
-    parser.add_argument('--base_path', type=str, default='./results_speculativereactiveoptimal',
+    parser.add_argument('--base_path', type=str, default='./../results',
                        help='Directory to save simulation results')
     
     # Simulation Constants
     parser.add_argument('--reset_age', type=float, default=1.0, help='Reset age for reactive flows')
-    parser.add_argument('--speculative_reset_age', type=float, default=0.2, help='Reset age for speculative flows')
-    parser.add_argument('--simulation_time', type=float, default=20, help='Simulation duration in seconds')
+    parser.add_argument('--speculative_reset_age', type=float, default=0.3, help='Reset age for speculative flows')
+    parser.add_argument('--simulation_time', type=float, default=200.0, help='Simulation duration in seconds')
     
     return parser.parse_args()
 
@@ -95,9 +101,12 @@ def main():
     # Parse arguments
     args = parse_arguments()
 
-    job_dir = jd_job_dir()
-    job_dir.mkdir(parents=True, exist_ok=True)
-    args.base_path = str(job_dir)
+    if ENABLE_JD:
+        output_dir = jd_job_dir()
+    else:
+        output_dir = Path(args.base_path)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    args.base_path = str(output_dir)
     
     # Set random seed for reproducibility
     np.random.seed(args.seed)
@@ -140,7 +149,6 @@ def main():
     
     # Log simulation start
     logger.simulation_start(args.mode, args.tablesize, args.trace)
-    logger.info(f"Job directory: {job_dir}")
     logger.info(f"Pcap base path: {args.pcap_base_path}")
     logger.info(f"Output directory: {args.base_path}")
     
@@ -245,8 +253,8 @@ def main():
         # Log total execution time
         logger.info(f"Total execution time: {total_wall_clock_time:.2f} seconds")
 
-        # Upload results to JobDistributor
-        upload_job_outputs(job_dir, logger)
+        if ENABLE_JD:
+            upload_job_outputs(output_dir, logger)
         
     except FileNotFoundError as e:
         logger.error_with_troubleshooting(str(e))
