@@ -59,7 +59,7 @@ def parse_arguments():
     parser.add_argument('--spatialReward', type=float, default=0.75, help='Spatial reward factor')
     
     # SDN Mode
-    parser.add_argument('--mode', type=str, default='reactive', 
+    parser.add_argument('--mode', type=str, default='speculativereactive', 
                        choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal', 'speculativereactiveoptimal'],
                        help='SDN mode: reactive, speculative, speculativereactive, reactiveoptimal, or speculativereactiveoptimal')
     
@@ -89,7 +89,7 @@ def parse_arguments():
     # Simulation Constants
     parser.add_argument('--reset_age', type=float, default=1.0, help='Reset age for reactive flows')
     parser.add_argument('--speculative_reset_age', type=float, default=0.3, help='Reset age for speculative flows')
-    parser.add_argument('--simulation_time', type=float, default=200.0, help='Simulation duration in seconds')
+    parser.add_argument('--simulation_time', type=float, default=1600.0, help='Simulation duration in seconds')
     
     return parser.parse_args()
 
