@@ -5,7 +5,7 @@ import sys
 import time
 from pathlib import Path
 
-ENABLE_JD = False
+ENABLE_JD = True
 
 if ENABLE_JD:
     from jd import jd_job_dir, jd_upload
@@ -253,8 +253,8 @@ def main():
         # Log total execution time
         logger.info(f"Total execution time: {total_wall_clock_time:.2f} seconds")
 
-        if ENABLE_JD:
-            upload_job_outputs(output_dir, logger)
+        # if ENABLE_JD:
+        #     upload_job_outputs(output_dir, logger)
         
     except FileNotFoundError as e:
         logger.error_with_troubleshooting(str(e))
