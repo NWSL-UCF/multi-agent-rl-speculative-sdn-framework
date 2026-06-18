@@ -158,8 +158,15 @@ class ReactiveSimulation:
         flow_entry = flow_entry[['Source', 'Destination', 'flow_age', 'switchcopy', 'is_speculative']]
         self.flow_queue.append(flow_entry)
     
-    def _evict_flow_if_needed(self):
+    def _evict_flow_if_needed(self, flow_entry):
         """Evict a flow if the switch table is full"""
+        # before evicting, we need to check if the flow is in the switch already
+        # write a loop to check if the flow is in the switch already
+        for i in range(len(self.switch_table)):
+            if flow_entry.iloc[0]['Source'] == self.switch_table.iloc[i]['Source'] and flow_entry.iloc[0]['Destination'] == self.switch_table.iloc[i]['Destination']:
+                print(f"Flow already in switch table: {flow_entry.iloc[0]['Source']} {flow_entry.iloc[0]['Destination']}")
+                return False
+        
         if len(self.switch_table) >= self.table_size:
             flow_to_evict, _ = self.priority_policy.find_least_frequently_used_flow(
                 self.switch_table, self.controller_table, is_speculative=False
@@ -169,6 +176,9 @@ class ReactiveSimulation:
                 self.switch_table = self.switch_table.drop(flow_to_evict)
                 if self.data_collector:
                     self.data_collector.record_evicted_flows(1)
+            else:
+                return False
+        return True # we have sufficient space to install the flow
     
     def _create_new_flow_dataframe(self, flow_entry):
         """Create a new flow DataFrame from the flow entry"""
@@ -210,8 +220,8 @@ class ReactiveSimulation:
     
     def _install_flow_from_queue(self, flow_entry):
         """Install flow from queue to switch table"""
-        self._evict_flow_if_needed()
-        self._create_and_install_flow(flow_entry)
+        if self._evict_flow_if_needed(flow_entry):
+            self._create_and_install_flow(flow_entry)
 
     def _should_break_for_learning(self, value):
         """Check if we should break for learning interval"""

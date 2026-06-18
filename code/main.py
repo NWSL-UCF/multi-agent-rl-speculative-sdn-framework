@@ -52,9 +52,9 @@ def parse_arguments():
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size for experience replay')
     
     # Simulation Parameters
-    parser.add_argument('--tablesize', type=int, default=70, help='Switch table size')
+    parser.add_argument('--tablesize', type=int, default=10, help='Switch table size')
     parser.add_argument('--LFUTimeInterval', type=int, default=10, help='LFU time interval')
-    parser.add_argument('--agingfactor', type=float, default=0.995, help='Aging factor')
+    parser.add_argument('--agingfactor', type=float, default=0.7, help='Aging factor')
     parser.add_argument('--rewardAgingFactor', type=float, default=0.95, help='Reward aging factor')
     parser.add_argument('--spatialReward', type=float, default=0.75, help='Spatial reward factor')
     
@@ -89,7 +89,7 @@ def parse_arguments():
     # Simulation Constants
     parser.add_argument('--reset_age', type=float, default=1.0, help='Reset age for reactive flows')
     parser.add_argument('--speculative_reset_age', type=float, default=0.3, help='Reset age for speculative flows')
-    parser.add_argument('--simulation_time', type=float, default=1600.0, help='Simulation duration in seconds')
+    parser.add_argument('--simulation_time', type=float, default=10.0, help='Simulation duration in seconds')
     
     return parser.parse_args()
 
