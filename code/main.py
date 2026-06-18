@@ -79,11 +79,11 @@ def parse_arguments():
     
     # Data Path Configuration
     parser.add_argument('--pcap_base_path', type=str, 
-                       default='./../Pcap',
+                       default='/home/ab823254/data/multi-agent-rl-speculative-sdn-framework/Pcap',
                        help='Base path for pcap CSV data files')
     
     # Output Configuration
-    parser.add_argument('--base_path', type=str, default='./../results',
+    parser.add_argument('--base_path', type=str, default='/home/ab823254/data/multi-agent-rl-speculative-sdn-framework/results',
                        help='Directory to save simulation results')
     
     # Simulation Constants
@@ -261,7 +261,7 @@ def main():
         sys.exit(1)
     except Exception as e:
         logger.unexpected_error(str(e))
-        import tracebackx
+        import traceback
         traceback.print_exc()
         sys.exit(1)
 

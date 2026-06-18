@@ -101,10 +101,11 @@ class ReactiveSimulation:
         """Process flow installation queue"""
         if len(self.flow_queue) > 0:
             current_time = float(value.iloc[self.packet_counter].iloc[0])
-            queue_head = self.flow_queue[0]
+            # queue_head = self.flow_queue[0]
             
-            if queue_head.iloc[0]['switchcopy'] < current_time:
+            while len(self.flow_queue) > 0 and self.flow_queue[0].iloc[0]['switchcopy'] <= current_time:
                 # Install flow from queue
+                queue_head = self.flow_queue[0]
                 self.flow_queue.popleft()
                 self._install_flow_from_queue(queue_head)
     

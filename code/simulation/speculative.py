@@ -219,7 +219,7 @@ class SpeculativeSimulation:
             self.controller_table[['Source', 'Destination', 'accumulated_reward']], 
             on=['Source', 'Destination']
         )
-        flow_priorities = flow_priorities.sort_values(by='accumulated_reward', ascending=True)
+        flow_priorities = flow_priorities.sort_values(by='accumulated_reward', ascending=False)
         
         # Install flows up to table capacity
         flows_to_install = flow_priorities.head(self.table_size)
