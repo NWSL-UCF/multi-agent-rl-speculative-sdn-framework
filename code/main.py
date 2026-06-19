@@ -5,7 +5,7 @@ import sys
 import time
 from pathlib import Path
 
-ENABLE_JD = True
+ENABLE_JD = False
 
 if ENABLE_JD:
     from jd import jd_job_dir, jd_upload

@@ -3,6 +3,8 @@ import os
 import json
 from datetime import datetime
 
+from util.environment import save_environment_json
+
 class DataCollector:
     def __init__(self, args, output_dir="./results", logger=None):
         self.args = args
@@ -264,6 +266,13 @@ class DataCollector:
         
         # Save summary statistics
         self._save_summary()
+
+        # Save installed package versions from requirements.txt
+        save_environment_json(
+            self.output_dir,
+            selected_device=getattr(self.args, "selected_device", None),
+            logger=self.logger,
+        )
         
         if self.logger:
             self.logger.all_results_saved()
