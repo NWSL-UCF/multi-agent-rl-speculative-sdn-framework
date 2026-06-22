@@ -1,0 +1,28 @@
+{
+    "numberofFlowsPerAgent": [2, 5, 10],
+    "epsilon_start": [1.0],
+    "epsilon_end": [0.01],
+    "epsilon_decay": [0.995],
+    "gamma": [0.75,0.9, 0.95],
+    "target_replace_iter": [10, 100],
+    "memory_capacity": [500],
+    "LR": [0.5, 0.75,0.9],
+    "hidden_layers": [1, 2],
+    "batch_size": [32],
+    "tablesize": [100],
+    "LFUTimeInterval": [10],
+    "agingfactor": [0.999],
+    "rewardAgingFactor": [0.75, 0.9, 0.95],
+    "spatialReward": [0.75, 0.9, 0.95],
+    "mode": ["speculative"],
+    "device": ["cpu"],
+    "seed": [101, 297, 413],
+    "ordering": ["trace", "source", "destination"],
+    "trace": [1, 2, 3],
+    "LTI": [0.1],
+    "RTI": [0.01],
+    "reset_age": [1.0],
+    "speculative_reset_age": [0.5],
+    "simulation_time": [200]
+}
+  
