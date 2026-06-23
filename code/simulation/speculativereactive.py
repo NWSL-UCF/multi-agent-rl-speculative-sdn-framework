@@ -6,14 +6,14 @@ from collections import deque
 
 
 class SpeculativeReactiveSimulation:
-    def __init__(self, args, controller_table, switch_table, priority_policy, reward_function, multiagent_dqn, data_collector, logger=None):
+    def __init__(self, args, controller_table, switch_table, priority_policy, reward_function, learner, data_collector, logger=None):
         self.args = args
         self.controller_table = controller_table
         self.old_controller_table = controller_table.copy()
         self.switch_table = switch_table
         self.priority_policy = priority_policy
         self.reward_function = reward_function
-        self.multiagent_dqn = multiagent_dqn
+        self.learner = learner
         self.data_collector = data_collector
         self.logger = logger
         
@@ -36,7 +36,7 @@ class SpeculativeReactiveSimulation:
         self.new_flow_list = []
         
         # State tracking
-        self.current_state = torch.zeros(self.multiagent_dqn.num_states)
+        self.current_state = torch.zeros(self.learner.num_states)
         self.action_history = []
         
     def run(self, dataset, value):
@@ -205,11 +205,11 @@ class SpeculativeReactiveSimulation:
     def _perform_speculative_learning(self, dataset, value):
         """Perform speculative learning and flow installation"""
         # Select actions for all agents
-        action_list = self.multiagent_dqn.select_actions(self.current_state)
+        action_list = self.learner.select_actions(self.current_state)
         self.action_history.append(action_list)
         
         # Convert actions to binary flow decisions
-        agent_actions = self.multiagent_dqn.convert_actions_to_binary(action_list)
+        agent_actions = self.learner.convert_actions_to_binary(action_list)
         
         # Select flows based on agent decisions
         selected_flows = self._select_flows_based_on_actions(agent_actions)
@@ -252,15 +252,15 @@ class SpeculativeReactiveSimulation:
 
         # Store transitions for learning
         next_state = torch.FloatTensor(action_list)
-        self.multiagent_dqn.store_transitions(
-            self.current_state, action_list, agent_rewards, next_state
+        self.learner.store_transitions(
+            self.current_state, action_list, agent_rewards, next_state, reward_list
         )
         
         # Trigger learning
-        self.multiagent_dqn.learn()
+        self.learner.learn()
         
         # Decay epsilon for exploration vs exploitation balance
-        self.multiagent_dqn.decay_epsilon_for_all_agents()
+        self.learner.decay_epsilon_for_all_agents()
         
         # Update state
         self.current_state = next_state

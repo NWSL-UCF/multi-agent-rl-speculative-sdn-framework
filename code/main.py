@@ -15,6 +15,8 @@ from util.data_loader import DataLoader
 from core.priority_policy import PriorityPolicy
 from core.reward_function import RewardFunction
 from core.multiagent_dqn import MultiAgentDQN
+from core.ppo_agent import PPOLearner
+from core.combinatorial_bandit import CombinatorialBanditLearner
 from simulation.reactive import ReactiveSimulation
 from simulation.speculative import SpeculativeSimulation
 from simulation.speculativereactive import SpeculativeReactiveSimulation
@@ -22,6 +24,21 @@ from simulation.reactive_optimal import ReactiveOptimalSimulation
 from simulation.speculative_reactive_optimal import SpeculativeReactiveOptimalSimulation
 from util.data_collector import DataCollector
 from util.logger import SDNLogger
+
+
+def build_learner(args, controller_table):
+    """Construct the speculative-flow learner selected by ``--algorithm``.
+
+    All learners share the same method interface expected by the speculative
+    simulations, so they are interchangeable. Defaults to the original
+    multi-agent DQN.
+    """
+    if args.algorithm == 'ppo':
+        return PPOLearner(args, controller_table)
+    elif args.algorithm == 'bandit':
+        return CombinatorialBanditLearner(args, controller_table)
+    else:
+        return MultiAgentDQN(args, controller_table)
 
 
 def upload_job_outputs(job_dir, logger):
@@ -50,6 +67,22 @@ def parse_arguments():
     parser.add_argument('--hidden_layers', type=int, default=2, help='Number of hidden layers in DQN')
     parser.add_argument('--hidden_layer_size', type=int, default=None, help='Size of hidden layers (None: use current implementation, int: uniform size for all hidden layers)')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size for experience replay')
+    
+    # Learning Algorithm Selection (applies to speculative / speculativereactive modes)
+    parser.add_argument('--algorithm', type=str, default='dqn',
+                       choices=['dqn', 'ppo', 'bandit'],
+                       help='Speculative-flow learner: dqn (default), ppo (actor-critic), or bandit (combinatorial UCB)')
+    
+    # PPO Parameters (used when --algorithm ppo)
+    parser.add_argument('--ppo_lr', type=float, default=3e-4, help='PPO learning rate')
+    parser.add_argument('--ppo_clip', type=float, default=0.2, help='PPO clipped-surrogate ratio epsilon')
+    parser.add_argument('--ppo_epochs', type=int, default=4, help='PPO update epochs per rollout')
+    parser.add_argument('--ppo_entropy_coef', type=float, default=0.01, help='PPO entropy bonus coefficient')
+    parser.add_argument('--ppo_value_coef', type=float, default=0.5, help='PPO value loss coefficient')
+    parser.add_argument('--ppo_gae_lambda', type=float, default=0.95, help='PPO GAE lambda')
+    
+    # Combinatorial Bandit Parameters (used when --algorithm bandit)
+    parser.add_argument('--bandit_c', type=float, default=1.0, help='Combinatorial bandit UCB exploration constant')
     
     # Simulation Parameters
     parser.add_argument('--tablesize', type=int, default=10, help='Switch table size')
@@ -176,11 +209,11 @@ def main():
             simulation.run(dataset, value)
             
         elif args.mode == 'speculative':
-            # Initialize DQN only for speculative modes
-            multiagent_dqn = MultiAgentDQN(args, controller_table)
+            # Initialize the selected learner only for speculative modes
+            learner = build_learner(args, controller_table)
             
             # Add network architecture info to args for logging
-            network_info = multiagent_dqn.get_network_info()
+            network_info = learner.get_network_info()
             if network_info:
                 args.network_architecture = network_info
             
@@ -189,17 +222,17 @@ def main():
                                                switch_table, 
                                                priority_policy, 
                                                reward_function, 
-                                               multiagent_dqn, 
+                                               learner, 
                                                data_collector, 
                                                logger)
             simulation.run(dataset, value)
             
         elif args.mode == 'speculativereactive':
-            # Initialize DQN only for speculative modes
-            multiagent_dqn = MultiAgentDQN(args, controller_table)
+            # Initialize the selected learner only for speculative modes
+            learner = build_learner(args, controller_table)
             
             # Add network architecture info to args for logging
-            network_info = multiagent_dqn.get_network_info()
+            network_info = learner.get_network_info()
             if network_info:
                 args.network_architecture = network_info
             
@@ -208,7 +241,7 @@ def main():
                                                        switch_table, 
                                                        priority_policy, 
                                                        reward_function, 
-                                                       multiagent_dqn, 
+                                                       learner, 
                                                        data_collector, 
                                                        logger)
             simulation.run(dataset, value)

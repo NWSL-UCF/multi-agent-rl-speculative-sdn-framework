@@ -168,8 +168,13 @@ class MultiAgentDQN:
                 
         return agent_actions
     
-    def store_transitions(self, current_state, action_list, agent_rewards, next_state):
-        """Store transitions for all agents"""
+    def store_transitions(self, current_state, action_list, agent_rewards, next_state, reward_list=None):
+        """Store transitions for all agents
+
+        ``reward_list`` (per-flow semi-bandit feedback) is accepted for a common
+        learner interface but is unused by DQN, which learns from the aggregated
+        per-agent ``agent_rewards``.
+        """
         for agent, dqn in enumerate(self.agents):
             dqn.store_transition(current_state, action_list[agent], agent_rewards[agent], next_state)
     
