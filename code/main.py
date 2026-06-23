@@ -55,18 +55,20 @@ def parse_arguments():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(description='Modular Speculative SDN Simulation')
     
-    # DQN Parameters
+    # Shared Learner / Agent Parameters (used by multiple algorithms)
     parser.add_argument('--numberofFlowsPerAgent', type=int, default=10, help='Number of flows per agent')
-    parser.add_argument('--epsilon_start', type=float, default=1.0, help='Starting epsilon value for exploration')
-    parser.add_argument('--epsilon_end', type=float, default=0.01, help='Final epsilon value for exploitation')
-    parser.add_argument('--epsilon_decay', type=float, default=0.995, help='Epsilon decay rate per LTI')
-    parser.add_argument('--gamma', type=float, default=0.9, help='Discount factor gamma')
-    parser.add_argument('--target_replace_iter', type=int, default=100, help='Target network replacement interval')
-    parser.add_argument('--memory_capacity', type=int, default=500, help='Memory capacity for experience replay')
-    parser.add_argument('--LR', type=float, default=0.5, help='Learning rate')
-    parser.add_argument('--hidden_layers', type=int, default=2, help='Number of hidden layers in DQN')
+    parser.add_argument('--gamma', type=float, default=0.9, help='Discount factor gamma (DQN and PPO)')
+    parser.add_argument('--hidden_layers', type=int, default=2, help='Number of hidden layers (DQN and PPO)')
     parser.add_argument('--hidden_layer_size', type=int, default=None, help='Size of hidden layers (None: use current implementation, int: uniform size for all hidden layers)')
-    parser.add_argument('--batch_size', type=int, default=32, help='Batch size for experience replay')
+    parser.add_argument('--batch_size', type=int, default=32, help='Batch size (DQN experience replay / PPO rollout length)')
+    
+    # DQN Parameters (used when --algorithm dqn)
+    parser.add_argument('--dqn_epsilon_start', type=float, default=1.0, help='Starting epsilon value for exploration')
+    parser.add_argument('--dqn_epsilon_end', type=float, default=0.01, help='Final epsilon value for exploitation')
+    parser.add_argument('--dqn_epsilon_decay', type=float, default=0.995, help='Epsilon decay rate per LTI')
+    parser.add_argument('--dqn_target_replace_iter', type=int, default=100, help='Target network replacement interval')
+    parser.add_argument('--dqn_memory_capacity', type=int, default=500, help='Memory capacity for experience replay')
+    parser.add_argument('--dqn_lr', type=float, default=0.5, help='DQN learning rate')
     
     # Learning Algorithm Selection (applies to speculative / speculativereactive modes)
     parser.add_argument('--algorithm', type=str, default='dqn',

@@ -56,17 +56,17 @@ class DQNAgent:
         
         self.learn_step_counter = 0
         self.memory_counter = 0
-        self.memory = np.zeros((args.memory_capacity, num_states*2+2))
+        self.memory = np.zeros((args.dqn_memory_capacity, num_states*2+2))
         
-        self.learning_rate = float(args.LR)
+        self.learning_rate = float(args.dqn_lr)
         # Epsilon decay parameters
-        self.epsilon_start = float(args.epsilon_start)
-        self.epsilon_end = float(args.epsilon_end)
-        self.epsilon_decay = float(args.epsilon_decay)
+        self.epsilon_start = float(args.dqn_epsilon_start)
+        self.epsilon_end = float(args.dqn_epsilon_end)
+        self.epsilon_decay = float(args.dqn_epsilon_decay)
         self.epsilon = self.epsilon_start  # Start with high exploration
         self.gamma = float(args.gamma)
-        self.target_replace_iter = args.target_replace_iter
-        self.memory_capacity = args.memory_capacity
+        self.target_replace_iter = args.dqn_target_replace_iter
+        self.memory_capacity = args.dqn_memory_capacity
         self.batch_size = args.batch_size
         
         self.optimizer = torch.optim.Adam(self.eval_net.parameters(), lr=self.learning_rate)
