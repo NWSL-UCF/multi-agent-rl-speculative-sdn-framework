@@ -26,7 +26,7 @@ from util.data_collector import DataCollector
 from util.logger import SDNLogger
 
 
-def build_learner(args, controller_table):
+def build_learner(args, controller_table, logger=None):
     """Construct the speculative-flow learner selected by ``--algorithm``.
 
     All learners share the same method interface expected by the speculative
@@ -38,7 +38,7 @@ def build_learner(args, controller_table):
     elif args.algorithm == 'bandit':
         return CombinatorialBanditLearner(args, controller_table)
     else:
-        return MultiAgentDQN(args, controller_table)
+        return MultiAgentDQN(args, controller_table, logger)
 
 
 def upload_job_outputs(job_dir, logger):
@@ -212,7 +212,7 @@ def main():
             
         elif args.mode == 'speculative':
             # Initialize the selected learner only for speculative modes
-            learner = build_learner(args, controller_table)
+            learner = build_learner(args, controller_table, logger)
             
             # Add network architecture info to args for logging
             network_info = learner.get_network_info()
@@ -231,7 +231,7 @@ def main():
             
         elif args.mode == 'speculativereactive':
             # Initialize the selected learner only for speculative modes
-            learner = build_learner(args, controller_table)
+            learner = build_learner(args, controller_table, logger)
             
             # Add network architecture info to args for logging
             network_info = learner.get_network_info()

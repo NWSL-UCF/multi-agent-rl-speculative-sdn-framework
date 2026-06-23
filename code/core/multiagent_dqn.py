@@ -45,9 +45,10 @@ class NeuralNetwork(nn.Module):
         return action_value
 
 class DQNAgent:
-    def __init__(self, num_states, num_actions, args, device=None):
+    def __init__(self, num_states, num_actions, args, device=None, logger=None):
         # Set device (default to CPU if not provided)
         self.device = device if device is not None else torch.device("cpu")
+        self.logger = logger
         
         hidden_layers = getattr(args, 'hidden_layers', 1)
         hidden_layer_size = getattr(args, 'hidden_layer_size', None)
@@ -100,11 +101,19 @@ class DQNAgent:
         self.memory_counter += 1
     
     def learn(self):
+        if self.memory_counter < self.batch_size:
+            return None
+
         if self.learn_step_counter % self.target_replace_iter == 0:
             self.target_net.load_state_dict(self.eval_net.state_dict())
+            if self.logger:
+                self.logger.debug(
+                    f"DQN target network updated at learn_step={self.learn_step_counter}"
+                )
         self.learn_step_counter += 1
         
-        sample_index = np.random.choice(self.memory_capacity, self.batch_size)
+        available = min(self.memory_counter, self.memory_capacity)
+        sample_index = np.random.choice(available, self.batch_size, replace=False)
         batch_memory = self.memory[sample_index, :]
         
         # Get input size from the first layer
@@ -125,9 +134,10 @@ class DQNAgent:
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        return float(loss.item())
 
 class MultiAgentDQN:
-    def __init__(self, args, controller_table):
+    def __init__(self, args, controller_table, logger=None):
         self.args = args
         self.num_flows = len(controller_table)
         self.num_flows_per_agent = args.numberofFlowsPerAgent
@@ -141,9 +151,11 @@ class MultiAgentDQN:
         else:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
+        self.logger = logger
+        self._learning_started = False
         self.agents = []
         for agent in range(self.num_agents):
-            self.agents.append(DQNAgent(self.num_states, self.num_actions, args, self.device))
+            self.agents.append(DQNAgent(self.num_states, self.num_actions, args, self.device, logger))
     
     def select_actions(self, current_state):
         """Select actions for all agents"""
@@ -180,9 +192,34 @@ class MultiAgentDQN:
     
     def learn(self):
         """Trigger learning for all agents"""
-        if self.agents[0].memory_counter > self.agents[0].memory_capacity:
-            for dqn in self.agents:
-                dqn.learn()
+        agent = self.agents[0]
+        if agent.memory_counter < agent.batch_size:
+            if self.logger:
+                self.logger.debug(
+                    f"DQN learning skipped: memory_counter={agent.memory_counter}, "
+                    f"batch_size={agent.batch_size} (need >= batch_size)"
+                )
+            return
+
+        if self.logger and not self._learning_started:
+            self.logger.info(
+                f"DQN learning started: memory_counter={agent.memory_counter}, "
+                f"batch_size={agent.batch_size}, memory_capacity={agent.memory_capacity}"
+            )
+            self._learning_started = True
+
+        losses = []
+        for dqn in self.agents:
+            loss = dqn.learn()
+            if loss is not None:
+                losses.append(loss)
+
+        if self.logger and losses:
+            available = min(agent.memory_counter, agent.memory_capacity)
+            self.logger.debug(
+                f"DQN learn step: memory_counter={agent.memory_counter}, "
+                f"available_samples={available}, avg_loss={sum(losses) / len(losses):.4f}"
+            )
     
     def decay_epsilon_for_all_agents(self):
         """Decay epsilon for all agents to balance exploration vs exploitation"""
