@@ -80,7 +80,7 @@ class DataLoader:
         controller_table['spatial_reward_component'] = 0.0
         controller_table['is_speculated_flow'] = 0
         
-        return controller_table
+        return controller_table.reset_index(drop=True)
     
     def _create_switch_table(self):
         """Create switch table with clear column structure"""

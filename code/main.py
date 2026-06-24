@@ -68,10 +68,12 @@ def parse_arguments():
     parser.add_argument('--dqn_epsilon_decay', type=float, default=0.995, help='Epsilon decay rate per LTI')
     parser.add_argument('--dqn_target_replace_iter', type=int, default=100, help='Target network replacement interval')
     parser.add_argument('--dqn_memory_capacity', type=int, default=500, help='Memory capacity for experience replay')
+    parser.add_argument('--dqn_learning_start_size', type=int, default=100,
+                       help='Minimum replay-buffer transitions before DQN training starts (must be >= batch_size)')
     parser.add_argument('--dqn_lr', type=float, default=0.5, help='DQN learning rate')
     
     # Learning Algorithm Selection (applies to speculative / speculativereactive modes)
-    parser.add_argument('--algorithm', type=str, default='dqn',
+    parser.add_argument('--algorithm', type=str, default='ppo',
                        choices=['dqn', 'ppo', 'bandit'],
                        help='Speculative-flow learner: dqn (default), ppo (actor-critic), or bandit (combinatorial UCB)')
     
@@ -87,9 +89,9 @@ def parse_arguments():
     parser.add_argument('--bandit_c', type=float, default=1.0, help='Combinatorial bandit UCB exploration constant')
     
     # Simulation Parameters
-    parser.add_argument('--tablesize', type=int, default=10, help='Switch table size')
+    parser.add_argument('--tablesize', type=int, default=70, help='Switch table size')
     parser.add_argument('--LFUTimeInterval', type=int, default=10, help='LFU time interval')
-    parser.add_argument('--agingfactor', type=float, default=0.7, help='Aging factor')
+    parser.add_argument('--agingfactor', type=float, default=0.995, help='Aging factor')
     parser.add_argument('--rewardAgingFactor', type=float, default=0.95, help='Reward aging factor')
     parser.add_argument('--spatialReward', type=float, default=0.75, help='Spatial reward factor')
     
@@ -99,7 +101,7 @@ def parse_arguments():
                        help='SDN mode: reactive, speculative, speculativereactive, reactiveoptimal, or speculativereactiveoptimal')
     
     # Device Configuration
-    parser.add_argument('--device', type=str, default='auto', 
+    parser.add_argument('--device', type=str, default='cpu', 
                        choices=['auto', 'cpu', 'cuda', 'cuda:0', 'cuda:1'],
                        help='Device to use: auto (detect automatically), cpu, cuda, cuda:0, cuda:1')
     
@@ -118,13 +120,13 @@ def parse_arguments():
                        help='Base path for pcap CSV data files')
     
     # Output Configuration
-    parser.add_argument('--base_path', type=str, default='/home/ab823254/data/multi-agent-rl-speculative-sdn-framework/results',
+    parser.add_argument('--base_path', type=str, default='/home/ab823254/data/multi-agent-rl-speculative-sdn-framework/results/debug',
                        help='Directory to save simulation results')
     
     # Simulation Constants
     parser.add_argument('--reset_age', type=float, default=1.0, help='Reset age for reactive flows')
-    parser.add_argument('--speculative_reset_age', type=float, default=0.3, help='Reset age for speculative flows')
-    parser.add_argument('--simulation_time', type=float, default=10.0, help='Simulation duration in seconds')
+    parser.add_argument('--speculative_reset_age', type=float, default=0.5, help='Reset age for speculative flows')
+    parser.add_argument('--simulation_time', type=float, default=200.0, help='Simulation duration in seconds')
     
     return parser.parse_args()
 

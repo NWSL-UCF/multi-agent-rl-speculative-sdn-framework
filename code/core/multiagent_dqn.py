@@ -69,6 +69,13 @@ class DQNAgent:
         self.target_replace_iter = args.dqn_target_replace_iter
         self.memory_capacity = args.dqn_memory_capacity
         self.batch_size = args.batch_size
+        self.learning_start_size = args.dqn_learning_start_size
+        if self.learning_start_size < self.batch_size and logger:
+            logger.warning(
+                f"dqn_learning_start_size ({self.learning_start_size}) < batch_size "
+                f"({self.batch_size}); using batch_size as effective learning start threshold"
+            )
+            self.learning_start_size = self.batch_size
         
         self.optimizer = torch.optim.Adam(self.eval_net.parameters(), lr=self.learning_rate)
         self.loss_func = nn.MSELoss()
@@ -193,17 +200,19 @@ class MultiAgentDQN:
     def learn(self):
         """Trigger learning for all agents"""
         agent = self.agents[0]
-        if agent.memory_counter < agent.batch_size:
+        if agent.memory_counter < agent.learning_start_size:
             if self.logger:
                 self.logger.debug(
                     f"DQN learning skipped: memory_counter={agent.memory_counter}, "
-                    f"batch_size={agent.batch_size} (need >= batch_size)"
+                    f"learning_start_size={agent.learning_start_size} "
+                    f"(need >= learning_start_size)"
                 )
             return
 
         if self.logger and not self._learning_started:
             self.logger.info(
                 f"DQN learning started: memory_counter={agent.memory_counter}, "
+                f"learning_start_size={agent.learning_start_size}, "
                 f"batch_size={agent.batch_size}, memory_capacity={agent.memory_capacity}"
             )
             self._learning_started = True

@@ -327,9 +327,9 @@ class DataCollector:
                 )
 
         return {
-            'hitrate': hitrate,
-            'speculation_efficiency': speculation_efficiency,
-            'average_speculation_efficiency': average_speculation_efficiency,
+            'average_hitrate_per_lti': hitrate,
+            'overall_speculation_efficiency': speculation_efficiency,
+            'average_speculation_efficiency_per_lti': average_speculation_efficiency,
         }
     
     def _save_summary(self):
@@ -357,10 +357,10 @@ class DataCollector:
             'total_speculative_flows': self.total_speculative_flows,
             'total_reactive_flows': self.total_reactive_flows,
             'overall_hit_rate': (self.total_hits / max(1, self.total_packets)) * 100,
-            'hitrate': aggregate_metrics['hitrate'],
+            'average_hitrate_per_lti': aggregate_metrics['average_hitrate_per_lti'],
             'overall_miss_rate': (self.total_misses / max(1, self.total_packets)) * 100,
-            'speculation_efficiency': aggregate_metrics['speculation_efficiency'],
-            'average_speculation_efficiency': aggregate_metrics['average_speculation_efficiency'],
+            'overall_speculation_efficiency': aggregate_metrics['overall_speculation_efficiency'],
+            'average_speculation_efficiency_per_lti': aggregate_metrics['average_speculation_efficiency_per_lti'],
             'simulation_duration_seconds': self.current_time,
             'total_run_time': total_run_time_hms,
             'wall_clock_time_seconds': self.total_wall_clock_time,
@@ -382,12 +382,12 @@ class DataCollector:
             'total_packets': self.total_packets,
             'total_hits': self.total_hits,
             'total_misses': self.total_misses,
-            'hit_rate': (self.total_hits / max(1, self.total_packets)) * 100,
-            'hitrate': aggregate_metrics['hitrate'],
-            'miss_rate': (self.total_misses / max(1, self.total_packets)) * 100,
+            'overall_hit_rate': (self.total_hits / max(1, self.total_packets)) * 100,
+            'average_hitrate_per_lti': aggregate_metrics['average_hitrate_per_lti'],
+            'overall_miss_rate': (self.total_misses / max(1, self.total_packets)) * 100,
             'total_speculative_flows': self.total_speculative_flows,
             'total_reactive_flows': self.total_reactive_flows,
-            'speculation_efficiency': aggregate_metrics['speculation_efficiency'],
-            'average_speculation_efficiency': aggregate_metrics['average_speculation_efficiency'],
+            'overall_speculation_efficiency': aggregate_metrics['overall_speculation_efficiency'],
+            'average_speculation_efficiency_per_lti': aggregate_metrics['average_speculation_efficiency_per_lti'],
             'simulation_duration': self.current_time
         }

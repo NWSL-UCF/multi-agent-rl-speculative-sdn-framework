@@ -279,15 +279,8 @@ class SpeculativeReactiveSimulation:
     
     def _select_flows_based_on_actions(self, agent_actions):
         """Select flows based on agent binary decisions"""
-        # Create flow selection matrix
-        flow_selection = pd.DataFrame()
-        flow_selection['No.'] = range(len(self.controller_table))
-        flow_selection['Source'] = self.controller_table['Source'].values
-        flow_selection['Destination'] = self.controller_table['Destination'].values
-        
-        # Filter based on agent actions
-        selected_flows = flow_selection.iloc[agent_actions == 1]
-        return selected_flows
+        mask = agent_actions == 1
+        return self.controller_table.iloc[mask][['Source', 'Destination']].copy()
     
     def _install_speculative_flows(self, selected_flows):
         """Install speculative flows in switch table"""
@@ -302,41 +295,19 @@ class SpeculativeReactiveSimulation:
         # Install flows up to table capacity
         flows_to_install = flow_priorities.head(self.table_size)
         
-        # Calculate how many flows we need to evict upfront
-        current_table_size = len(self.switch_table)
-        flows_to_install_count = len(flows_to_install)
-        
-        # Use the counting method to find actual available space through eviction
+        # Evict flows with age at or below speculative_reset_age to free space
         evictable_flows = self.priority_policy.count_evictable_flows(self.switch_table)
-        available_space = self.table_size - current_table_size + evictable_flows
-        
-        if flows_to_install_count > available_space:
-            # We need to evict flows to make space
-            flows_to_evict = available_space
-            
-            # Use optimized method to evict all needed flows in one shot
+        if evictable_flows > 0:
             self.switch_table, evicted_count = self.priority_policy.evict_flows_with_low_age_optimized(
-                self.switch_table, self.controller_table, flows_to_evict, False, self.data_collector
+                self.switch_table, self.controller_table, evictable_flows, False, self.data_collector
             )
-            # If we couldn't evict enough flows, reduce the number of flows to install
-            flows_to_install = flows_to_install.head(available_space)
-            print(f"Could only evict {evicted_count} flows, installing {len(flows_to_install)} flows instead of {flows_to_install_count}")
-        else:
-            # No eviction needed, set evicted_count to 0
-            evicted_count = 0
         
-        # Final table size enforcement - ensure we don't exceed table capacity
-        current_table_size = len(self.switch_table)
-        if current_table_size >= self.table_size:
-            # Table is still full, reduce flows to install
-            remaining_space = self.table_size - current_table_size
-            if remaining_space <= 0:
-                print(f"Table is full ({current_table_size}/{self.table_size}), no flows can be installed")
-                return
-            flows_to_install = flows_to_install.head(remaining_space)
-            print(f"Table enforcement: only installing {remaining_space} flows to maintain size limit")
+        remaining_space = self.table_size - len(self.switch_table)
+        if remaining_space <= 0:
+            return
         
-        # Now install all flows at once (no need to check table size in loop)
+        flows_to_install = flows_to_install.head(remaining_space)
+        
         for _, flow in flows_to_install.iterrows():
             # Install the speculative flow
             new_flow = {
