@@ -1,11 +1,12 @@
 import argparse
+import json
 import numpy as np
 import torch
 import sys
 import time
 from pathlib import Path
 
-ENABLE_JD = False
+ENABLE_JD = True
 
 if ENABLE_JD:
     from jd import jd_job_dir, jd_upload
@@ -51,6 +52,50 @@ def upload_job_outputs(job_dir, logger):
             logger.info(f"Uploaded to job server: {path.name}")
 
 
+def resolve_objective_params(args):
+    """Override agingfactor (and mode) from the best-params lookup table.
+
+    When ``--objective`` is provided the function reads
+    ``best_agingfactor_tablesize50.json`` (same directory as this file) and
+    resolves the best agingfactor for the combination of
+    (objective, algorithm, ordering), overwriting whatever ``--agingfactor``
+    was passed on the command line.  The simulation mode is also forced to
+    match the objective so that the run is self-consistent.
+    """
+    if args.objective is None:
+        return
+
+    json_path = Path(__file__).parent / "best_agingfactor_tablesize50.json"
+    with open(json_path) as f:
+        best = json.load(f)
+
+    objective_data = best.get(args.objective)
+    if objective_data is None:
+        raise ValueError(f"Objective '{args.objective}' not found in {json_path.name}")
+
+    algorithm_data = objective_data.get(args.algorithm)
+    if algorithm_data is None:
+        raise ValueError(
+            f"Algorithm '{args.algorithm}' not found under objective "
+            f"'{args.objective}' in {json_path.name}"
+        )
+
+    ordering_data = algorithm_data.get(args.ordering)
+    if ordering_data is None:
+        raise ValueError(
+            f"Ordering '{args.ordering}' not found under objective "
+            f"'{args.objective}' / algorithm '{args.algorithm}' in {json_path.name}"
+        )
+
+    args.agingfactor = float(ordering_data["agingfactor"])
+
+    # Force the simulation mode to match the objective.
+    if args.objective.startswith("speculativereactive"):
+        args.mode = "speculativereactive"
+    else:
+        args.mode = "speculative"
+
+
 def parse_arguments():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(description='Modular Speculative SDN Simulation')
@@ -87,6 +132,13 @@ def parse_arguments():
     
     # Combinatorial Bandit Parameters (used when --algorithm bandit)
     parser.add_argument('--bandit_c', type=float, default=1.0, help='Combinatorial bandit UCB exploration constant')
+
+    # Objective-driven parameter resolution
+    parser.add_argument('--objective', type=str, default=None,
+                       choices=['speculative_hitrate', 'speculativereactive_hitrate',
+                                'speculativereactive_speculation_efficiency'],
+                       help='When set, looks up the best agingfactor for (objective, algorithm, ordering) '
+                            'from best_agingfactor_tablesize50.json and overrides --agingfactor and --mode')
     
     # Simulation Parameters
     parser.add_argument('--tablesize', type=int, default=70, help='Switch table size')
@@ -137,6 +189,7 @@ def main():
     
     # Parse arguments
     args = parse_arguments()
+    resolve_objective_params(args)
 
     if ENABLE_JD:
         output_dir = jd_job_dir()
