@@ -1,0 +1,24 @@
+% Requires: \usepackage{booktabs,multirow}
+\begin{table*}[t]
+\centering
+\caption{Best metrics per algorithm and flow ordering (SFT size = 50). Reactive baseline hit rate: 67.87\%. Spec.=Speculative, S+R=Speculative+Reactive. AF=Aging Factor, Eff.=Speculation Efficiency. Each metric uses the aging factor that maximizes it.}
+\label{tab:unified-metrics-tablesize50}
+\small
+\begin{tabular}{@{}llcccccccc@{}}
+\toprule
+& & \multicolumn{3}{c}{Speculative Hit Rate} & \multicolumn{3}{c}{Spec. + Reac. Hit Rate} & \multicolumn{2}{c}{Speculation Efficiency} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-10}
+Algorithm & Flow Order & Aging Factor & Hit Rate (\%) & Improvement & Aging Factor & Hit Rate (\%) & Improvement & Aging Factor & Efficiency \\
+\midrule
+\multirow{3}{*}{Bandit} & Source & 0.999 & 49.42 & -18.45 & 0.993 & 68.71 & +0.85 & 0.993 & 11.82 \\
+Destination & 0.999 & 48.42 & -19.45 & 0.993 & 68.52 & +0.65 & 0.997 & 8.04 \\
+Trace & 0.997 & 50.28 & -17.59 & 0.9 & 77.01 & +9.14 & 0.993 & 7.68 \\
+\multirow{3}{*}{PPO} & Source & 0.999 & 18.57 & -49.29 & 0.993 & 68.44 & +0.57 & 0.997 & 8.59 \\
+Destination & 0.997 & 24.70 & -43.17 & 0.993 & 68.53 & +0.67 & 0.997 & 6.73 \\
+Trace & 0.997 & 27.88 & -39.98 & 0.9 & 72.34 & +4.48 & 0.995 & 3.76 \\
+\multirow{3}{*}{DQN} & Source & 0.999 & 19.74 & -48.12 & 0.993 & 68.16 & +0.30 & 0.997 & 7.36 \\
+Destination & 0.999 & 27.31 & -40.56 & 0.993 & 68.29 & +0.42 & 0.993 & 8.30 \\
+Trace & 0.999 & 24.64 & -43.22 & 0.95 & 73.46 & +5.59 & 0.991 & 3.75 \\
+\bottomrule
+\end{tabular}
+\end{table*}

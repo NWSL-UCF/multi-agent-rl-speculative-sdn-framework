@@ -59,13 +59,15 @@ class ReactiveSimulation:
             
             # Record LTI metrics and update performance metrics
             current_time = float(value.iloc[self.packet_counter].iloc[0])
-            self.data_collector.record_lti_metrics(lti_start_time, current_time, self.switch_table)
             
-            # Log LTI completion
+            # Log LTI completion (before resetting counters)
             if self.logger:
                 self.logger.lti_info(self.data_collector.current_lti, 
                                    f"Completed LTI. Packets: {self.packet_counter - lti_start_packet}, "
-                                   f"Switch table size: {len(self.switch_table)}")
+                                   f"Switch table size: {len(self.switch_table)}, "
+                                   f"Evicted flows: {self.data_collector.lti_evicted_flows}")
+            
+            self.data_collector.record_lti_metrics(lti_start_time, current_time, self.switch_table)
             
             lti_start_time = current_time  # Start time for next LTI
             lti_start_packet = self.packet_counter  # Track packet count for next LTI

@@ -1,0 +1,20 @@
+\begin{table}[ht]
+\centering
+\caption{Speculative Hit Rate (SFT Size = 50)}
+\label{tab:speculative-hitrate-50}
+\begin{tabular}{llccc}
+\toprule
+Algorithm & Flow Order & Aging Factor & Hit Rate (\%) & Difference with Reactive \\
+\midrule
+Bandit & Source & 0.999 & 49.42 & -18.45 \\
+Bandit & Destination & 0.999 & 48.42 & -19.45 \\
+Bandit & Trace & 0.997 & 50.28 & -17.59 \\
+PPO & Source & 0.999 & 18.57 & -49.29 \\
+PPO & Destination & 0.997 & 24.70 & -43.17 \\
+PPO & Trace & 0.997 & 27.88 & -39.98 \\
+DQN & Source & 0.999 & 19.74 & -48.12 \\
+DQN & Destination & 0.999 & 27.31 & -40.56 \\
+DQN & Trace & 0.999 & 24.64 & -43.22 \\
+\bottomrule
+\end{tabular}
+\end{table}
