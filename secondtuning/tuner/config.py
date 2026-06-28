@@ -36,6 +36,8 @@ RESULT_FILES = ("lti_metrics.csv", "summary.json")
 TERMINAL_BAD_STATUSES = {"ABORTED", "FAILED", "ERROR", "CANCELLED", "CANCELED"}
 
 # Raw lti_metrics columns summed per second-bucket during aggregation.
+# ``total_flows`` is intentionally excluded: it is derived as
+# ``reactive_flows + speculative_flows`` when computing per-bucket metrics.
 SUM_COLS = [
     "total_packets",
     "total_hits",
@@ -43,7 +45,6 @@ SUM_COLS = [
     "speculative_hits",
     "reactive_flows",
     "speculative_flows",
-    "total_flows",
 ]
 
 # Pass-through keys that must never reach the job (we control these ourselves).

@@ -94,7 +94,7 @@ def _evaluate_midpoints(ctx, tunable_state, param_name, mid_left, mid_right, ite
 
     ml_obj, _, _ = score_point(ctx, ml_jobs, mid_left, "mid_left", iter_tag)
     mr_obj, _, _ = score_point(ctx, mr_jobs, mid_right, "mid_right", iter_tag)
-    return ml_obj, mr_obj
+    return round(ml_obj, 2), round(mr_obj, 2)
 
 
 def _run_iteration(ctx, state, param_name):
