@@ -142,7 +142,7 @@ def parse_arguments():
                             'from best_agingfactor_tablesize50.json and overrides --agingfactor and --mode')
     
     # Simulation Parameters
-    parser.add_argument('--tablesize', type=int, default=70, help='Switch table size')
+    parser.add_argument('--tablesize', type=int, default=50, help='Switch table size')
     parser.add_argument('--LFUTimeInterval', type=int, default=10, help='LFU time interval')
     parser.add_argument('--agingfactor', type=float, default=0.995, help='Aging factor')
     parser.add_argument('--rewardAgingFactor', type=float, default=0.95, help='Reward aging factor')
