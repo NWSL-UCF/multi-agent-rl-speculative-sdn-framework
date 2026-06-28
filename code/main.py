@@ -43,10 +43,11 @@ def build_learner(args, controller_table, logger=None):
 
 
 def upload_job_outputs(job_dir, logger):
-    """Upload all generated files to the jd server after the simulation."""
+    """Upload summary.json and lti_metrics.csv to the jd server after the simulation."""
     if not ENABLE_JD:
         return
-    for path in sorted(job_dir.iterdir()):
+    for name in ("summary.json", "lti_metrics.csv"):
+        path = job_dir / name
         if path.is_file():
             jd_upload(path)
             logger.info(f"Uploaded to job server: {path.name}")
@@ -343,8 +344,8 @@ def main():
         # Log total execution time
         logger.info(f"Total execution time: {total_wall_clock_time:.2f} seconds")
 
-        # if ENABLE_JD:
-        #     upload_job_outputs(output_dir, logger)
+        if ENABLE_JD:
+            upload_job_outputs(output_dir, logger)
         
     except FileNotFoundError as e:
         logger.error_with_troubleshooting(str(e))
