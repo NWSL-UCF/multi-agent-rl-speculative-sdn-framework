@@ -123,7 +123,12 @@ def download(job_id, filename, dest_path):
 
 
 def wait_and_download(job_ids, jobs_dir, poll_interval):
-    """Poll until all jobs finish, downloading result files as each one is DONE.
+    """Poll until every job is DONE, downloading result files as each one finishes.
+
+    Only ``DONE`` is terminal. Statuses such as ``ABORTED`` are NOT given up on:
+    the jd server reassigns those jobs, so we keep polling until they eventually
+    reach ``DONE``. Download failures (DONE but files missing) are the only way a
+    job lands in ``failed``.
 
     Returns the set of job ids whose results were fully downloaded.
     """
@@ -135,6 +140,7 @@ def wait_and_download(job_ids, jobs_dir, poll_interval):
     while pending:
         status = {int(j["id"]): str(j.get("status", "")).upper() for j in list_all_jobs()}
 
+        aborted = {}
         for job_id in sorted(pending):
             st = status.get(job_id, "UNKNOWN")
             if st == "DONE":
@@ -145,9 +151,13 @@ def wait_and_download(job_ids, jobs_dir, poll_interval):
                 if not ok:
                     logger.error(f"Job {job_id} DONE but result download incomplete.")
             elif st in TERMINAL_BAD_STATUSES:
-                logger.error(f"Job {job_id} reached terminal status {st}; skipping it.")
-                pending.discard(job_id)
-                failed.add(job_id)
+                # The server will reassign it; keep waiting for it to become DONE.
+                aborted[job_id] = st
+
+        if aborted:
+            logger.warning(
+                f"{len(aborted)} jobs are in a bad state but await server reassignment: {aborted}"
+            )
 
         logger.info(
             f"Poll: done={len(done)} failed={len(failed)} pending={len(pending)} ({sorted(pending)})"
@@ -156,5 +166,5 @@ def wait_and_download(job_ids, jobs_dir, poll_interval):
             time.sleep(poll_interval)
 
     if failed:
-        logger.warning(f"{len(failed)} jobs did not produce results: {sorted(failed)}")
+        logger.warning(f"{len(failed)} jobs finished DONE but could not be downloaded: {sorted(failed)}")
     return done
