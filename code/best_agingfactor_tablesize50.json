@@ -3,43 +3,61 @@
     "speculative_hitrate": {
         "bandit": {
             "source": {
-                "agingfactor": 0.999,
+                "params": {
+                    "agingfactor": 0.999
+                },
                 "hitrate": 49.42
             },
             "destination": {
-                "agingfactor": 0.999,
+                "params": {
+                    "agingfactor": 0.999
+                },
                 "hitrate": 48.42
             },
             "trace": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "hitrate": 50.28
             }
         },
         "ppo": {
             "source": {
-                "agingfactor": 0.999,
+                "params": {
+                    "agingfactor": 0.999
+                },
                 "hitrate": 18.57
             },
             "destination": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "hitrate": 24.7
             },
             "trace": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "hitrate": 27.88
             }
         },
         "dqn": {
             "source": {
-                "agingfactor": 0.999,
+                "params": {
+                    "agingfactor": 0.999
+                },
                 "hitrate": 19.74
             },
             "destination": {
-                "agingfactor": 0.999,
+                "params": {
+                    "agingfactor": 0.999
+                },
                 "hitrate": 27.31
             },
             "trace": {
-                "agingfactor": 0.999,
+                "params": {
+                    "agingfactor": 0.999
+                },
                 "hitrate": 24.64
             }
         }
@@ -47,43 +65,61 @@
     "speculativereactive_hitrate": {
         "bandit": {
             "source": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "hitrate": 68.71
             },
             "destination": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "hitrate": 68.52
             },
             "trace": {
-                "agingfactor": 0.9,
+                "params": {
+                    "agingfactor": 0.9
+                },
                 "hitrate": 77.01
             }
         },
         "ppo": {
             "source": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "hitrate": 68.44
             },
             "destination": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "hitrate": 68.53
             },
             "trace": {
-                "agingfactor": 0.9,
+                "params": {
+                    "agingfactor": 0.9
+                },
                 "hitrate": 72.34
             }
         },
         "dqn": {
             "source": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "hitrate": 68.16
             },
             "destination": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "hitrate": 68.29
             },
             "trace": {
-                "agingfactor": 0.95,
+                "params": {
+                    "agingfactor": 0.95
+                },
                 "hitrate": 73.46
             }
         }
@@ -91,43 +127,61 @@
     "speculativereactive_speculation_efficiency": {
         "bandit": {
             "source": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "speculation_efficiency": 11.82
             },
             "destination": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "speculation_efficiency": 8.04
             },
             "trace": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "speculation_efficiency": 7.68
             }
         },
         "ppo": {
             "source": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "speculation_efficiency": 8.59
             },
             "destination": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "speculation_efficiency": 6.73
             },
             "trace": {
-                "agingfactor": 0.995,
+                "params": {
+                    "agingfactor": 0.995
+                },
                 "speculation_efficiency": 3.76
             }
         },
         "dqn": {
             "source": {
-                "agingfactor": 0.997,
+                "params": {
+                    "agingfactor": 0.997
+                },
                 "speculation_efficiency": 7.36
             },
             "destination": {
-                "agingfactor": 0.993,
+                "params": {
+                    "agingfactor": 0.993
+                },
                 "speculation_efficiency": 8.3
             },
             "trace": {
-                "agingfactor": 0.991,
+                "params": {
+                    "agingfactor": 0.991
+                },
                 "speculation_efficiency": 3.75
             }
         }

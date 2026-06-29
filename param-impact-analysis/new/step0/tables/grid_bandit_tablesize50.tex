@@ -1,0 +1,18 @@
+% Requires: \usepackage{booktabs}
+\begin{table*}[t]
+\centering
+\caption{Best grid-search configuration for Bandit (SFT size = 50). Reactive baseline hit rate: 67.87\%. AF=Aging Factor, RAF=Reward Aging Factor, SR=Spatial Reward. Improvement columns report hit-rate gain over reactive (\%). Each metric group lists the hyperparameters that maximize that objective.}
+\label{tab:grid-bandit-tablesize50}
+\small
+\begin{tabular}{@{}lccccccccccccccccc@{}}
+\toprule
+& \multicolumn{6}{c}{Spec. HR} & \multicolumn{6}{c}{Spec.+Reac. HR} & \multicolumn{5}{c}{Spec. Eff.} \\
+\cmidrule(lr){2-7} \cmidrule(lr){8-13} \cmidrule(lr){14-18}
+Flow Order & AF & RAF & SR & c & HR(%) & Improv. & AF & RAF & SR & c & HR(%) & Improv. & AF & RAF & SR & c & Eff. \\
+\midrule
+Src & 0.999 & 0.90 & 0.75 & 5 & 49.42 & -18.45 & 0.993 & 0.90 & 0.75 & 0.01 & 69.35 & +1.48 & 0.993 & 0.90 & 0.90 & 1 & 11.82 \\
+Dest & 0.999 & 0.90 & 0.75 & 5 & 48.42 & -19.45 & 0.993 & 0.90 & 0.90 & 0.05 & 69.10 & +1.23 & 0.997 & 0.75 & 0.90 & 0.2 & 11.77 \\
+Trace & 0.997 & 0.90 & 0.75 & 5 & 50.28 & -17.59 & 0.9 & 0.95 & 0.90 & 0.05 & 80.82 & +12.95 & 0.993 & 0.90 & 0.90 & 10 & 11.55 \\
+\bottomrule
+\end{tabular}
+\end{table*}

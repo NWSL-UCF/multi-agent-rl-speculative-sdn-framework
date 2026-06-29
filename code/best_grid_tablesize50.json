@@ -1,0 +1,324 @@
+{
+    "reactive_hitrate": 67.87,
+    "speculative_hitrate": {
+        "bandit": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "bandit_c": 5.0
+                },
+                "hitrate": 50.28
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.999,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "bandit_c": 5.0
+                },
+                "hitrate": 49.42
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.999,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "bandit_c": 5.0
+                },
+                "hitrate": 48.42
+            }
+        },
+        "dqn": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.999,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "numberofFlowsPerAgent": 5,
+                    "gamma": 0.9,
+                    "dqn_lr": 0.5,
+                    "hidden_layers": 2
+                },
+                "hitrate": 31.42
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.999,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "numberofFlowsPerAgent": 5,
+                    "gamma": 0.95,
+                    "dqn_lr": 0.9,
+                    "hidden_layers": 2
+                },
+                "hitrate": 20.73
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.999,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "numberofFlowsPerAgent": 5,
+                    "gamma": 0.95,
+                    "dqn_lr": 0.75,
+                    "hidden_layers": 1
+                },
+                "hitrate": 29.44
+            }
+        },
+        "ppo": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "gamma": 0.9,
+                    "ppo_lr": 0.001,
+                    "hidden_layers": 2,
+                    "ppo_epochs": 2
+                },
+                "hitrate": 31.05
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.999,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "gamma": 0.75,
+                    "ppo_lr": 0.0001,
+                    "hidden_layers": 2,
+                    "ppo_epochs": 8
+                },
+                "hitrate": 20.4
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "gamma": 0.75,
+                    "ppo_lr": 0.0001,
+                    "hidden_layers": 2,
+                    "ppo_epochs": 4
+                },
+                "hitrate": 29.18
+            }
+        }
+    },
+    "speculativereactive_hitrate": {
+        "bandit": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.9,
+                    "rewardAgingFactor": 0.95,
+                    "spatialReward": 0.9,
+                    "bandit_c": 0.05
+                },
+                "hitrate": 80.82
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "bandit_c": 0.01
+                },
+                "hitrate": 69.35
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.9,
+                    "bandit_c": 0.05
+                },
+                "hitrate": 69.1
+            }
+        },
+        "dqn": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.95,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "numberofFlowsPerAgent": 8,
+                    "gamma": 0.9,
+                    "dqn_lr": 0.9,
+                    "hidden_layers": 1
+                },
+                "hitrate": 74.7
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.95,
+                    "numberofFlowsPerAgent": 8,
+                    "gamma": 0.9,
+                    "dqn_lr": 0.75,
+                    "hidden_layers": 2
+                },
+                "hitrate": 68.55
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.75,
+                    "spatialReward": 0.95,
+                    "numberofFlowsPerAgent": 2,
+                    "gamma": 0.95,
+                    "dqn_lr": 0.75,
+                    "hidden_layers": 2
+                },
+                "hitrate": 68.74
+            }
+        },
+        "ppo": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.9,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.75,
+                    "gamma": 0.95,
+                    "ppo_lr": 0.001,
+                    "hidden_layers": 2,
+                    "ppo_epochs": 8
+                },
+                "hitrate": 75.03
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.95,
+                    "gamma": 0.95,
+                    "ppo_lr": 0.001,
+                    "hidden_layers": 1,
+                    "ppo_epochs": 8
+                },
+                "hitrate": 68.67
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.75,
+                    "spatialReward": 0.95,
+                    "gamma": 0.75,
+                    "ppo_lr": 0.0001,
+                    "hidden_layers": 1,
+                    "ppo_epochs": 4
+                },
+                "hitrate": 68.86
+            }
+        }
+    },
+    "speculativereactive_speculation_efficiency": {
+        "bandit": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.9,
+                    "bandit_c": 10.0
+                },
+                "speculation_efficiency": 11.55
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.9,
+                    "bandit_c": 1.0
+                },
+                "speculation_efficiency": 11.82
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.75,
+                    "spatialReward": 0.9,
+                    "bandit_c": 0.2
+                },
+                "speculation_efficiency": 11.77
+            }
+        },
+        "dqn": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.991,
+                    "rewardAgingFactor": 0.75,
+                    "spatialReward": 0.75,
+                    "numberofFlowsPerAgent": 2,
+                    "gamma": 0.9,
+                    "dqn_lr": 0.5,
+                    "hidden_layers": 2
+                },
+                "speculation_efficiency": 7.21
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.95,
+                    "spatialReward": 0.75,
+                    "numberofFlowsPerAgent": 10,
+                    "gamma": 0.9,
+                    "dqn_lr": 0.9,
+                    "hidden_layers": 1
+                },
+                "speculation_efficiency": 11.97
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.993,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.9,
+                    "numberofFlowsPerAgent": 5,
+                    "gamma": 0.9,
+                    "dqn_lr": 0.9,
+                    "hidden_layers": 1
+                },
+                "speculation_efficiency": 9.8
+            }
+        },
+        "ppo": {
+            "trace": {
+                "params": {
+                    "agingfactor": 0.995,
+                    "rewardAgingFactor": 0.95,
+                    "spatialReward": 0.95,
+                    "gamma": 0.95,
+                    "ppo_lr": 0.001,
+                    "hidden_layers": 1,
+                    "ppo_epochs": 4
+                },
+                "speculation_efficiency": 7.62
+            },
+            "source": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.95,
+                    "spatialReward": 0.95,
+                    "gamma": 0.75,
+                    "ppo_lr": 0.0003,
+                    "hidden_layers": 2,
+                    "ppo_epochs": 4
+                },
+                "speculation_efficiency": 10.73
+            },
+            "destination": {
+                "params": {
+                    "agingfactor": 0.997,
+                    "rewardAgingFactor": 0.9,
+                    "spatialReward": 0.9,
+                    "gamma": 0.9,
+                    "ppo_lr": 0.001,
+                    "hidden_layers": 2,
+                    "ppo_epochs": 8
+                },
+                "speculation_efficiency": 10.55
+            }
+        }
+    }
+}

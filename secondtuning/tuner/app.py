@@ -3,8 +3,14 @@
 from pathlib import Path
 
 from . import jd_client
-from .cli import parse_args, parse_objective
-from .config import JOB_PARAM_BLOCKLIST
+from .cli import parse_args, parse_objective, resolve_tunable_spec
+from .config import (
+    DEFAULT_BASE_PATH,
+    ENABLE_JD,
+    JOB_PARAM_BLOCKLIST,
+    ORCHESTRATOR_PARAM_BLOCKLIST,
+    tunable_bound_keys,
+)
 from .context import RunContext
 from .logging_setup import get_logger, setup_logging
 from .persistence import load_checkpoint, save_checkpoint
@@ -13,24 +19,23 @@ from .search import build_initial_state, run_tuning
 logger = get_logger()
 
 
-def _parse_aligned_lists(control):
-    """Parse and validate the comma-separated tunable/bounds inputs."""
-    tunable = [p.strip() for p in control.tunable_params.split(",") if p.strip()]
-    sdp = [float(x) for x in control.starting_datapoints.split(",")]
-    lb = [float(x) for x in control.lower_bound.split(",")]
-    ub = [float(x) for x in control.upper_bound.split(",")]
-
-    if not (len(tunable) == len(sdp) == len(lb) == len(ub)):
-        raise ValueError(
-            "tunable_params, starting_datapoints, lower_bound and upper_bound must all "
-            f"have the same length (got {len(tunable)}, {len(sdp)}, {len(lb)}, {len(ub)})."
-        )
-    return tunable, sdp, lb, ub
+def _resolve_base_path(raw_job_params):
+    """Resolve and create the output root, matching ``code/main.py`` behaviour."""
+    if ENABLE_JD:
+        output_dir = jd_client.job_dir()
+    else:
+        base = raw_job_params.get("base_path") or DEFAULT_BASE_PATH
+        output_dir = Path(base)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return str(output_dir)
 
 
 def _build_run_dir(base_path, algorithm, objective, tuning_seed):
+    root = Path(base_path)
+    if ENABLE_JD:
+        return root
     return (
-        Path(base_path)
+        root
         / f"algorithm_{algorithm}"
         / f"objective_{objective}"
         / f"tunable_seed_{tuning_seed}"
@@ -38,12 +43,17 @@ def _build_run_dir(base_path, algorithm, objective, tuning_seed):
 
 
 def _static_job_params(raw_job_params, tunable):
-    """Pass-through params minus everything we control and minus the tunable params."""
-    blocked = JOB_PARAM_BLOCKLIST | set(tunable)
+    """Pass-through params minus orchestrator/tuning keys and tunable param columns."""
+    blocked = (
+        JOB_PARAM_BLOCKLIST
+        | ORCHESTRATOR_PARAM_BLOCKLIST
+        | tunable_bound_keys()
+        | set(tunable)
+    )
     return {k: v for k, v in raw_job_params.items() if k not in blocked}
 
 
-def _log_configuration(control, ctx, mode, metric, tunable, sdp, lb, ub):
+def _log_configuration(control, ctx, mode, metric, tunable, sdp, lb, ub, base_path):
     logger.info("Ternary-search tuning starting")
     logger.info(f"  objective         : {control.objective} -> mode={mode}, metric={metric}")
     logger.info(f"  tunable_params    : {tunable}")
@@ -52,6 +62,7 @@ def _log_configuration(control, ctx, mode, metric, tunable, sdp, lb, ub):
     logger.info(f"  upper_bound       : {ub}")
     logger.info(f"  current_value     : {control.current_value}")
     logger.info(f"  tuning_seed       : {control.tuning_seed}")
+    logger.info(f"  base_path         : {base_path}")
     logger.info(f"  traces            : {ctx.traces}")
     logger.info(f"  seeds             : {ctx.seeds}")
     logger.info(f"  jobs per midpoint : {ctx.jobs_per_midpoint}")
@@ -82,16 +93,23 @@ def _resolve_state(control, ctx, mode, metric, tunable, sdp, lb, ub):
 
 def main(argv=None):
     control, raw_job_params = parse_args(argv)
+    jd_client.init(control.env_file)
+
     mode, metric = parse_objective(control.objective)
-    tunable, sdp, lb, ub = _parse_aligned_lists(control)
+    tunable, sdp, lb, ub = resolve_tunable_spec(control, raw_job_params)
+    base_path = _resolve_base_path(raw_job_params)
 
     traces = [int(t) for t in control.traces.split(",") if t.strip()]
     seeds = [int(s) for s in control.seeds.split(",") if s.strip()]
     job_params = _static_job_params(raw_job_params, tunable)
+    job_params["base_path"] = base_path
     algorithm = job_params.get("algorithm", "unknown")
 
+    run_dir = _build_run_dir(base_path, algorithm, control.objective, control.tuning_seed)
+    run_dir.mkdir(parents=True, exist_ok=True)
+
     ctx = RunContext(
-        run_dir=_build_run_dir(control.base_path, algorithm, control.objective, control.tuning_seed),
+        run_dir=run_dir,
         job_params=job_params,
         mode=mode,
         metric=metric,
@@ -103,9 +121,8 @@ def main(argv=None):
     )
 
     setup_logging(ctx.run_dir)
-    _log_configuration(control, ctx, mode, metric, tunable, sdp, lb, ub)
+    _log_configuration(control, ctx, mode, metric, tunable, sdp, lb, ub, base_path)
 
-    jd_client.init(control.env_file)
     state = _resolve_state(control, ctx, mode, metric, tunable, sdp, lb, ub)
 
     try:

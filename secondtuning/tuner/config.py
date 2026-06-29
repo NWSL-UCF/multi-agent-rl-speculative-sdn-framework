@@ -10,6 +10,9 @@ DEFAULT_SEEDS = [101, 297, 413]
 # Maximum ternary-search iterations per parameter.
 MAX_ITR = 7
 
+# When True, resolve output paths via ``jd.jd_job_dir()`` (same as code/main.py).
+ENABLE_JD = True
+
 # Stop searching a parameter once its window is smaller than this.
 CONVERGENCE_EPS = 1e-4
 
@@ -28,6 +31,11 @@ NEW_ID_POLL_ATTEMPTS = 6
 
 # Default location of the jd credentials .env file (kept OUTSIDE the repo).
 DEFAULT_ENV_FILE = "/home/ab823254/data/ternary-search.env"
+
+# Same default as code/main.py --base_path.
+DEFAULT_BASE_PATH = (
+    "/home/ab823254/data/multi-agent-rl-speculative-sdn-framework/results/debug"
+)
 
 # Files downloaded for every finished job.
 RESULT_FILES = ("lti_metrics.csv", "summary.json")
@@ -48,7 +56,37 @@ SUM_COLS = [
 ]
 
 # Pass-through keys that must never reach the job (we control these ourselves).
-JOB_PARAM_BLOCKLIST = {"seed", "trace", "mode", "objective", "base_path", "fresh_start"}
+JOB_PARAM_BLOCKLIST = {"seed", "trace", "mode", "objective", "fresh_start"}
+
+# Params that may be tuned (one column each in commands.csv / JobDistributor).
+TUNABLE_PARAM_NAMES = (
+    "bandit_c",
+    "gamma",
+    "rewardAgingFactor",
+    "spatialReward",
+    "agingfactor",
+    "dqn_lr",
+    "ppo_lr",
+)
+
+# Per-algorithm tunable params in CSV column order (unused params are omitted per row).
+ALGO_TUNABLE_PARAMS = {
+    "bandit": ("bandit_c", "rewardAgingFactor", "spatialReward", "agingfactor"),
+    "dqn": ("gamma", "rewardAgingFactor", "spatialReward", "agingfactor", "dqn_lr"),
+    "ppo": ("gamma", "rewardAgingFactor", "spatialReward", "agingfactor", "ppo_lr"),
+}
+
+# CSV / orchestrator keys that must not be forwarded to simulation jobs.
+ORCHESTRATOR_PARAM_BLOCKLIST = {"run_id"}
+
+
+def tunable_bound_keys():
+    """Return ``{param}_lower`` / ``{param}_upper`` keys for every tunable param."""
+    keys = set()
+    for name in TUNABLE_PARAM_NAMES:
+        keys.add(f"{name}_lower")
+        keys.add(f"{name}_upper")
+    return keys
 
 # On-disk artefact filenames (relative to the run directory).
 CHECKPOINT_FILE = "checkpoint.json"

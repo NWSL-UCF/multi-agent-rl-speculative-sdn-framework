@@ -9,6 +9,7 @@ argument without code edits.
 import argparse
 
 from .config import (
+    ALGO_TUNABLE_PARAMS,
     DEFAULT_ENV_FILE,
     DEFAULT_SEEDS,
     DEFAULT_TRACES,
@@ -56,13 +57,14 @@ def parse_args(argv=None):
                         help="True: start from scratch. False (default): resume from checkpoint.")
     parser.add_argument("--tuning_seed", type=int, default=0,
                         help="Seed used only to randomise the order tunable params are picked.")
-    parser.add_argument("--tunable_params", type=str, required=True,
-                        help="Comma-separated list of parameters to tune, e.g. 'agingfactor,bandit_c'.")
-    parser.add_argument("--starting_datapoints", type=str, required=True,
+    parser.add_argument("--tunable_params", type=str, default=None,
+                        help="Comma-separated list of parameters to tune. Omit when passing "
+                             "each param individually (e.g. --bandit_c 5.0 --bandit_c_lower 0.001).")
+    parser.add_argument("--starting_datapoints", type=str, default=None,
                         help="Comma-separated starting values aligned with --tunable_params.")
-    parser.add_argument("--lower_bound", type=str, required=True,
+    parser.add_argument("--lower_bound", type=str, default=None,
                         help="Comma-separated lower bounds aligned with --tunable_params.")
-    parser.add_argument("--upper_bound", type=str, required=True,
+    parser.add_argument("--upper_bound", type=str, default=None,
                         help="Comma-separated upper bounds aligned with --tunable_params.")
     parser.add_argument("--objective", type=str, required=True,
                         help="<mode>_<metric>, e.g. speculative_hitrate or "
@@ -70,8 +72,6 @@ def parse_args(argv=None):
     parser.add_argument("--current_value", type=float, required=True,
                         help="Objective value of the starting configuration (same scale as the "
                              "aggregated metric: hit-rate is a percentage).")
-    parser.add_argument("--base_path", type=str, required=True,
-                        help="Local directory for results/checkpoints. Not forwarded to jobs.")
     parser.add_argument("--env_file", type=str, default=DEFAULT_ENV_FILE,
                         help="Path to the jd credentials .env file.")
     parser.add_argument("--max_iter", type=int, default=MAX_ITR,
@@ -86,6 +86,88 @@ def parse_args(argv=None):
     control, unknown = parser.parse_known_args(argv)
     job_params = parse_passthrough(unknown)
     return control, job_params
+
+
+def _is_empty(value):
+    return value is None or str(value).strip() == ""
+
+
+def parse_aligned_lists(control):
+    """Parse comma-separated tunable/bounds inputs from explicit CLI flags."""
+    fields = (
+        control.tunable_params,
+        control.starting_datapoints,
+        control.lower_bound,
+        control.upper_bound,
+    )
+    if any(f is None for f in fields):
+        if any(f is not None for f in fields):
+            raise ValueError(
+                "When using --tunable_params, you must also pass --starting_datapoints, "
+                "--lower_bound and --upper_bound."
+            )
+        return None
+
+    tunable = [p.strip() for p in control.tunable_params.split(",") if p.strip()]
+    sdp = [float(x) for x in control.starting_datapoints.split(",")]
+    lb = [float(x) for x in control.lower_bound.split(",")]
+    ub = [float(x) for x in control.upper_bound.split(",")]
+
+    if not (len(tunable) == len(sdp) == len(lb) == len(ub)):
+        raise ValueError(
+            "tunable_params, starting_datapoints, lower_bound and upper_bound must all "
+            f"have the same length (got {len(tunable)}, {len(sdp)}, {len(lb)}, {len(ub)})."
+        )
+    return tunable, sdp, lb, ub
+
+
+def parse_individual_params(raw_params, algorithm):
+    """Build tunable lists from per-column JobDistributor / CSV parameters."""
+    if algorithm not in ALGO_TUNABLE_PARAMS:
+        raise ValueError(
+            f"Unknown algorithm '{algorithm}'. Expected one of: "
+            f"{', '.join(sorted(ALGO_TUNABLE_PARAMS))}."
+        )
+
+    tunable, sdp, lb, ub = [], [], [], []
+    for name in ALGO_TUNABLE_PARAMS[algorithm]:
+        start = raw_params.get(name)
+        low = raw_params.get(f"{name}_lower")
+        high = raw_params.get(f"{name}_upper")
+        if _is_empty(start) and _is_empty(low) and _is_empty(high):
+            continue
+        if _is_empty(start) or _is_empty(low) or _is_empty(high):
+            raise ValueError(
+                f"Incomplete tuning spec for '{name}': expected --{name}, "
+                f"--{name}_lower and --{name}_upper."
+            )
+        tunable.append(name)
+        sdp.append(float(start))
+        lb.append(float(low))
+        ub.append(float(high))
+
+    if not tunable:
+        raise ValueError(
+            f"No tunable parameters found for algorithm '{algorithm}'. "
+            "Pass per-param columns (e.g. --bandit_c 5.0 --bandit_c_lower 0.001 "
+            "--bandit_c_upper 100.0) or use --tunable_params with comma-separated bounds."
+        )
+    return tunable, sdp, lb, ub
+
+
+def resolve_tunable_spec(control, raw_params):
+    """Return ``(tunable, starting, lower, upper)`` from either input style."""
+    aligned = parse_aligned_lists(control)
+    if aligned is not None:
+        return aligned
+
+    algorithm = raw_params.get("algorithm")
+    if _is_empty(algorithm):
+        raise ValueError(
+            "Pass --algorithm when using individual param columns, or supply "
+            "--tunable_params with comma-separated bounds."
+        )
+    return parse_individual_params(raw_params, algorithm)
 
 
 def parse_objective(objective):

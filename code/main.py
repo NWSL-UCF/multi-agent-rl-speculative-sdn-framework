@@ -88,7 +88,7 @@ def resolve_objective_params(args):
             f"'{args.objective}' / algorithm '{args.algorithm}' in {json_path.name}"
         )
 
-    args.agingfactor = float(ordering_data["agingfactor"])
+    args.agingfactor = float(ordering_data["params"]["agingfactor"])
 
     # Force the simulation mode to match the objective.
     if args.objective.startswith("speculativereactive"):

@@ -1,0 +1,18 @@
+% Requires: \usepackage{booktabs}
+\begin{table*}[t]
+\centering
+\caption{Best grid-search configuration for DQN (SFT size = 50). Reactive baseline hit rate: 67.87\%. AF=Aging Factor, RAF=Reward Aging Factor, SR=Spatial Reward. Improvement columns report hit-rate gain over reactive (\%). Each metric group lists the hyperparameters that maximize that objective.}
+\label{tab:grid-dqn-tablesize50}
+\small
+\begin{tabular}{@{}lcccccccccccccccccccccccccc@{}}
+\toprule
+& \multicolumn{9}{c}{Spec. HR} & \multicolumn{9}{c}{Spec.+Reac. HR} & \multicolumn{8}{c}{Spec. Eff.} \\
+\cmidrule(lr){2-10} \cmidrule(lr){11-19} \cmidrule(lr){20-27}
+Flow Order & AF & RAF & SR & F/A & γ & LR & HL & HR(%) & Improv. & AF & RAF & SR & F/A & γ & LR & HL & HR(%) & Improv. & AF & RAF & SR & F/A & γ & LR & HL & Eff. \\
+\midrule
+Src & 0.999 & 0.90 & 0.75 & 5 & 0.95 & 0.90 & 2 & 20.73 & -47.14 & 0.993 & 0.90 & 0.95 & 8 & 0.90 & 0.75 & 2 & 68.55 & +0.68 & 0.997 & 0.95 & 0.75 & 10 & 0.90 & 0.90 & 1 & 11.97 \\
+Dest & 0.999 & 0.90 & 0.75 & 5 & 0.95 & 0.75 & 1 & 29.44 & -38.43 & 0.993 & 0.75 & 0.95 & 2 & 0.95 & 0.75 & 2 & 68.74 & +0.87 & 0.993 & 0.90 & 0.90 & 5 & 0.90 & 0.90 & 1 & 9.80 \\
+Trace & 0.999 & 0.90 & 0.75 & 5 & 0.90 & 0.50 & 2 & 31.42 & -36.45 & 0.95 & 0.90 & 0.75 & 8 & 0.90 & 0.90 & 1 & 74.70 & +6.83 & 0.991 & 0.75 & 0.75 & 2 & 0.90 & 0.50 & 2 & 7.21 \\
+\bottomrule
+\end{tabular}
+\end{table*}

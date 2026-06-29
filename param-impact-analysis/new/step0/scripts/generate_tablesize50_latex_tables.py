@@ -29,6 +29,24 @@ ORDERING_LABELS = {
     "destination": "Destination",
     "trace": "Trace",
 }
+TABLE_ORDERING_LABELS = {
+    "source": "Src",
+    "destination": "Dest",
+    "trace": "Trace",
+}
+AF_COL = "AF"
+HR_COL = "HR(%)"
+IMPROV_COL = "Improv."
+EFF_COL = "Eff."
+RL_COL = "RL"
+GROUP_SPEC_HR = "Spec. HR"
+GROUP_SR_HR = "Spec.+Reac. HR"
+GROUP_SR_EFF = "Spec. Eff."
+UNIFIED_GROUP_LABELS = [
+    (2, 4, GROUP_SPEC_HR),
+    (5, 7, GROUP_SR_HR),
+    (8, 9, GROUP_SR_EFF),
+]
 
 
 def read_summary(summary_path: Path) -> dict:
@@ -265,7 +283,7 @@ def build_best_agingfactor_json(
         }
         for row in rows:
             by_algo[row["algorithm"]][row["ordering"]] = {
-                "agingfactor": row["aging_factor"],
+                "params": {"agingfactor": row["aging_factor"]},
                 value_key: round(row["value"], 2),
             }
         return {
@@ -294,16 +312,16 @@ def build_unified_table_data(
     eff_by_key = _index_rows(efficiency_rows)
 
     headers = [
-        "RL",
+        RL_COL,
         "Flow Order",
-        "Aging Factor",
-        "Hit Rate (%)",
-        "Improvement",
-        "Aging Factor",
-        "Hit Rate (%)",
-        "Improvement",
-        "Aging Factor",
-        "Efficiency",
+        AF_COL,
+        HR_COL,
+        IMPROV_COL,
+        AF_COL,
+        HR_COL,
+        IMPROV_COL,
+        AF_COL,
+        EFF_COL,
     ]
     data: list[list[str]] = []
     for algorithm in ALGORITHMS:
@@ -315,7 +333,7 @@ def build_unified_table_data(
             data.append(
                 [
                     ALGORITHM_LABELS[algorithm],
-                    ORDERING_LABELS[ordering],
+                    TABLE_ORDERING_LABELS[ordering],
                     format_af(sp["aging_factor"]),
                     format_hit_rate(sp["value"]),
                     format_diff(sp["value"] - reactive_hr),
@@ -348,11 +366,7 @@ def _pdf_display_data_with_merged_algorithm(data: list[list[str]]) -> list[list[
     return display
 
 
-UNIFIED_GROUP_HEADERS = [
-    (2, 4, "Speculative Hit Rate"),
-    (5, 7, "Spec. + Reac. Hit Rate"),
-    (8, 9, "Speculation Efficiency"),
-]
+UNIFIED_GROUP_HEADERS = list(UNIFIED_GROUP_LABELS)
 
 
 def _pdf_group_header_row(n_cols: int) -> list[str]:
@@ -451,9 +465,9 @@ def render_unified_latex_table(
         r"\small",
         rf"\begin{{tabular}}{{@{{}}{col_spec}@{{}}}}",
         r"\toprule",
-        r"& & \multicolumn{3}{c}{Speculative Hit Rate} & \multicolumn{3}{c}{Spec. + Reac. Hit Rate} & \multicolumn{2}{c}{Speculation Efficiency} \\",
+        rf"& & \multicolumn{{3}}{{c}}{{{GROUP_SPEC_HR}}} & \multicolumn{{3}}{{c}}{{{GROUP_SR_HR}}} & \multicolumn{{2}}{{c}}{{{GROUP_SR_EFF}}} \\",
         r"\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-10}",
-        r"Algorithm & Flow Order & Aging Factor & Hit Rate (\%) & Improvement & Aging Factor & Hit Rate (\%) & Improvement & Aging Factor & Efficiency \\",
+        rf"{RL_COL} & Flow Order & {AF_COL} & HR(\%) & Improv. & {AF_COL} & HR(\%) & Improv. & {AF_COL} & Eff. \\",
         r"\midrule",
         *_latex_unified_rows(data),
         r"\bottomrule",
@@ -517,8 +531,8 @@ def render_unified_pdf(path: Path, headers: list[str], data: list[list[str]], re
     def cell_mid_y(row: int) -> float:
         return (row_tops[row] + row_bottoms[row]) / 2
 
-    THICK = 1.2
-    THIN  = 0.5
+    THICK = 0.9
+    THIN = 0.2
     BLACK = "black"
 
     def hrule(y: float, x0: float, x1: float, lw: float = THIN) -> None:
@@ -557,11 +571,7 @@ def render_unified_pdf(path: Path, headers: list[str], data: list[list[str]], re
     # cols 0-1: blank, just left border
     vrule(x0, row_bottoms[0], row_tops[0], THICK)
 
-    groups = [
-        (2, 4, "Speculative Hit Rate"),
-        (5, 7, "Spec. + Reac. Hit Rate"),
-        (8, 9, "Speculation Efficiency"),
-    ]
+    groups = list(UNIFIED_GROUP_LABELS)
     for c_start, c_end, label in groups:
         gx0, gx1 = cx(c_start), cxr(c_end)
         gmid = (gx0 + gx1) / 2

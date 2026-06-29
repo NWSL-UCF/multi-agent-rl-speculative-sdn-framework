@@ -46,14 +46,15 @@ def seconds_to_hms(seconds: float) -> str:
 
 def bucket_leaf_lti(df: pd.DataFrame) -> dict[int, dict[str, float]]:
     """Assign each LTI row to floor(lti_start_time) bucket and sum counters."""
-    buckets: dict[int, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+    if df.empty or "lti_start_time" not in df.columns:
+        return {}
 
-    for _, row in df.iterrows():
-        bucket = int(row["lti_start_time"])
-        for col in SUM_COLUMNS:
-            buckets[bucket][col] += float(row.get(col, 0) or 0)
-
-    return buckets
+    cols = [col for col in SUM_COLUMNS if col in df.columns]
+    grouped = df.assign(_bucket=df["lti_start_time"].astype(float).astype(int)).groupby("_bucket")[cols].sum()
+    return {
+        int(bucket): {col: float(row[col]) for col in cols}
+        for bucket, row in grouped.iterrows()
+    }
 
 
 def merge_bucket_dicts(all_runs: list[dict[int, dict[str, float]]]) -> dict[int, dict[str, float]]:
@@ -136,9 +137,10 @@ def compute_summary_metrics(lti_df: pd.DataFrame, leaf_summaries: list[dict]) ->
     reactive_hits = int(lti_df["reactive_hits"].sum())
 
     speculation_rate_sum = 0.0
-    for _, row in lti_df.iterrows():
-        if row["total_flows"] > 0:
-            speculation_rate_sum += row["speculative_flows"] / row["total_flows"]
+    if num_buckets > 0:
+        flows = lti_df["total_flows"]
+        mask = flows > 0
+        speculation_rate_sum = float((lti_df.loc[mask, "speculative_flows"] / flows[mask]).sum())
     avg_speculation_rate = speculation_rate_sum / num_buckets if num_buckets > 0 else 0.0
 
     overall_speculation_efficiency = 0.0
@@ -196,23 +198,44 @@ def is_reactive_tablesize_dir(path: Path) -> bool:
     return path.name.startswith("tablesize_") and any(path.glob("trace_*/lti_metrics.csv"))
 
 
-def aggregate_one(output_dir: Path, leaf_dirs: list[Path]) -> int:
+def aggregate_one(output_dir: Path, leaf_dirs: list[Path], skip_existing: bool = False) -> int:
     if not leaf_dirs:
         return 0
 
-    run_buckets = []
+    if skip_existing and (output_dir / "lti_metrics.csv").exists() and (output_dir / "summary.json").exists():
+        return len(leaf_dirs)
+
     leaf_summaries = []
+    frames = []
 
     for leaf in leaf_dirs:
-        df = pd.read_csv(leaf / "lti_metrics.csv")
-        run_buckets.append(bucket_leaf_lti(df))
+        lti_path = leaf / "lti_metrics.csv"
+        if not lti_path.exists():
+            continue
+        df = pd.read_csv(lti_path)
+        if df.empty or "lti_start_time" not in df.columns:
+            continue
+        cols = [col for col in SUM_COLUMNS if col in df.columns]
+        part = df[cols].copy()
+        part["_bucket"] = df["lti_start_time"].astype(float).astype(int)
+        frames.append(part)
+
         summary_path = leaf / "summary.json"
         if summary_path.exists():
             with open(summary_path) as f:
                 leaf_summaries.append(json.load(f))
 
-    merged = merge_bucket_dicts(run_buckets)
-    lti_df = buckets_to_dataframe(merged)
+    if not frames:
+        return 0
+
+    all_df = pd.concat(frames, ignore_index=True)
+    cols = [col for col in SUM_COLUMNS if col in all_df.columns]
+    merged_df = all_df.groupby("_bucket")[cols].sum()
+    buckets = {
+        int(bucket): {col: float(row[col]) for col in cols}
+        for bucket, row in merged_df.iterrows()
+    }
+    lti_df = buckets_to_dataframe(buckets)
     summary = compute_summary_metrics(lti_df, leaf_summaries)
 
     lti_df.to_csv(output_dir / "lti_metrics.csv", index=False)

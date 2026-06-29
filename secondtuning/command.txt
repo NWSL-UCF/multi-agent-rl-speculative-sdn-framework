@@ -1,0 +1,3424 @@
+# Ternary-search tuning commands (JobDistributor / commands.csv column style)
+# Run from secondtuning/: cd secondtuning
+# Total commands: 135
+# Output path: jd.jd_job_dir() when ENABLE_JD=True (default, same as code/main.py)
+
+# [1] speculative_hitrate / bandit / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 50.28 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [2] speculative_hitrate / bandit / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 50.28 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [3] speculative_hitrate / bandit / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 50.28 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [4] speculative_hitrate / bandit / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 50.28 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [5] speculative_hitrate / bandit / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 50.28 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [6] speculative_hitrate / bandit / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 49.42 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [7] speculative_hitrate / bandit / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 49.42 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [8] speculative_hitrate / bandit / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 49.42 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [9] speculative_hitrate / bandit / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 49.42 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [10] speculative_hitrate / bandit / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 49.42 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [11] speculative_hitrate / bandit / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 48.42 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [12] speculative_hitrate / bandit / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 48.42 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [13] speculative_hitrate / bandit / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 48.42 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [14] speculative_hitrate / bandit / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 48.42 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [15] speculative_hitrate / bandit / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 48.42 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 5.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [16] speculative_hitrate / dqn / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 31.42 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [17] speculative_hitrate / dqn / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 31.42 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [18] speculative_hitrate / dqn / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 31.42 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [19] speculative_hitrate / dqn / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 31.42 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [20] speculative_hitrate / dqn / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 31.42 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [21] speculative_hitrate / dqn / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 20.73 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [22] speculative_hitrate / dqn / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 20.73 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [23] speculative_hitrate / dqn / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 20.73 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [24] speculative_hitrate / dqn / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 20.73 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [25] speculative_hitrate / dqn / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 20.73 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [26] speculative_hitrate / dqn / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 29.44 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [27] speculative_hitrate / dqn / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 29.44 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [28] speculative_hitrate / dqn / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 29.44 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [29] speculative_hitrate / dqn / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 29.44 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [30] speculative_hitrate / dqn / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 29.44 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [31] speculative_hitrate / ppo / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 31.05 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 2 \
+    --tablesize 50
+
+# [32] speculative_hitrate / ppo / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 31.05 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 2 \
+    --tablesize 50
+
+# [33] speculative_hitrate / ppo / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 31.05 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 2 \
+    --tablesize 50
+
+# [34] speculative_hitrate / ppo / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 31.05 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 2 \
+    --tablesize 50
+
+# [35] speculative_hitrate / ppo / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 31.05 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 2 \
+    --tablesize 50
+
+# [36] speculative_hitrate / ppo / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 20.4 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [37] speculative_hitrate / ppo / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 20.4 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [38] speculative_hitrate / ppo / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 20.4 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [39] speculative_hitrate / ppo / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 20.4 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [40] speculative_hitrate / ppo / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 20.4 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.999 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [41] speculative_hitrate / ppo / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculative_hitrate \
+    --current_value 29.18 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [42] speculative_hitrate / ppo / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculative_hitrate \
+    --current_value 29.18 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [43] speculative_hitrate / ppo / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculative_hitrate \
+    --current_value 29.18 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [44] speculative_hitrate / ppo / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculative_hitrate \
+    --current_value 29.18 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [45] speculative_hitrate / ppo / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculative_hitrate \
+    --current_value 29.18 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [46] speculativereactive_hitrate / bandit / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 80.82 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [47] speculativereactive_hitrate / bandit / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 80.82 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [48] speculativereactive_hitrate / bandit / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 80.82 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [49] speculativereactive_hitrate / bandit / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 80.82 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [50] speculativereactive_hitrate / bandit / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 80.82 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [51] speculativereactive_hitrate / bandit / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.35 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 0.01 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [52] speculativereactive_hitrate / bandit / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.35 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 0.01 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [53] speculativereactive_hitrate / bandit / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.35 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 0.01 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [54] speculativereactive_hitrate / bandit / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.35 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 0.01 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [55] speculativereactive_hitrate / bandit / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.35 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 0.01 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [56] speculativereactive_hitrate / bandit / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.1 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [57] speculativereactive_hitrate / bandit / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.1 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [58] speculativereactive_hitrate / bandit / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.1 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [59] speculativereactive_hitrate / bandit / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.1 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [60] speculativereactive_hitrate / bandit / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 69.1 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.05 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [61] speculativereactive_hitrate / dqn / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 74.7 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.95 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [62] speculativereactive_hitrate / dqn / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 74.7 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.95 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [63] speculativereactive_hitrate / dqn / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 74.7 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.95 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [64] speculativereactive_hitrate / dqn / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 74.7 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.95 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [65] speculativereactive_hitrate / dqn / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 74.7 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.95 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [66] speculativereactive_hitrate / dqn / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.55 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [67] speculativereactive_hitrate / dqn / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.55 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [68] speculativereactive_hitrate / dqn / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.55 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [69] speculativereactive_hitrate / dqn / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.55 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [70] speculativereactive_hitrate / dqn / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.55 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 8 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [71] speculativereactive_hitrate / dqn / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.74 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [72] speculativereactive_hitrate / dqn / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.74 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [73] speculativereactive_hitrate / dqn / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.74 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [74] speculativereactive_hitrate / dqn / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.74 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [75] speculativereactive_hitrate / dqn / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.74 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.75 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [76] speculativereactive_hitrate / ppo / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 75.03 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [77] speculativereactive_hitrate / ppo / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 75.03 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [78] speculativereactive_hitrate / ppo / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 75.03 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [79] speculativereactive_hitrate / ppo / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 75.03 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [80] speculativereactive_hitrate / ppo / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 75.03 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.9 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [81] speculativereactive_hitrate / ppo / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.67 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [82] speculativereactive_hitrate / ppo / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.67 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [83] speculativereactive_hitrate / ppo / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.67 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [84] speculativereactive_hitrate / ppo / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.67 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [85] speculativereactive_hitrate / ppo / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.67 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [86] speculativereactive_hitrate / ppo / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.86 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [87] speculativereactive_hitrate / ppo / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.86 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [88] speculativereactive_hitrate / ppo / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.86 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [89] speculativereactive_hitrate / ppo / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.86 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [90] speculativereactive_hitrate / ppo / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_hitrate \
+    --current_value 68.86 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [91] speculativereactive_speculation_efficiency / bandit / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.55 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 10.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [92] speculativereactive_speculation_efficiency / bandit / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.55 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 10.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [93] speculativereactive_speculation_efficiency / bandit / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.55 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 10.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [94] speculativereactive_speculation_efficiency / bandit / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.55 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 10.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [95] speculativereactive_speculation_efficiency / bandit / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.55 \
+    --ordering trace \
+    --algorithm bandit \
+    --bandit_c 10.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [96] speculativereactive_speculation_efficiency / bandit / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.82 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 1.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [97] speculativereactive_speculation_efficiency / bandit / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.82 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 1.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [98] speculativereactive_speculation_efficiency / bandit / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.82 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 1.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [99] speculativereactive_speculation_efficiency / bandit / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.82 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 1.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [100] speculativereactive_speculation_efficiency / bandit / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.82 \
+    --ordering source \
+    --algorithm bandit \
+    --bandit_c 1.0 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [101] speculativereactive_speculation_efficiency / bandit / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.77 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.2 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [102] speculativereactive_speculation_efficiency / bandit / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.77 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.2 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [103] speculativereactive_speculation_efficiency / bandit / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.77 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.2 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [104] speculativereactive_speculation_efficiency / bandit / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.77 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.2 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [105] speculativereactive_speculation_efficiency / bandit / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.77 \
+    --ordering destination \
+    --algorithm bandit \
+    --bandit_c 0.2 \
+    --bandit_c_lower 0.001 \
+    --bandit_c_upper 100.0 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --tablesize 50
+
+# [106] speculativereactive_speculation_efficiency / dqn / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.21 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.991 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [107] speculativereactive_speculation_efficiency / dqn / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.21 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.991 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [108] speculativereactive_speculation_efficiency / dqn / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.21 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.991 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [109] speculativereactive_speculation_efficiency / dqn / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.21 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.991 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [110] speculativereactive_speculation_efficiency / dqn / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.21 \
+    --ordering trace \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.75 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.991 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.5 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 2 \
+    --hidden_layers 2 \
+    --tablesize 50
+
+# [111] speculativereactive_speculation_efficiency / dqn / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.97 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 10 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [112] speculativereactive_speculation_efficiency / dqn / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.97 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 10 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [113] speculativereactive_speculation_efficiency / dqn / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.97 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 10 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [114] speculativereactive_speculation_efficiency / dqn / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.97 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 10 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [115] speculativereactive_speculation_efficiency / dqn / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 11.97 \
+    --ordering source \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.75 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 10 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [116] speculativereactive_speculation_efficiency / dqn / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 9.8 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [117] speculativereactive_speculation_efficiency / dqn / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 9.8 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [118] speculativereactive_speculation_efficiency / dqn / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 9.8 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [119] speculativereactive_speculation_efficiency / dqn / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 9.8 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [120] speculativereactive_speculation_efficiency / dqn / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 9.8 \
+    --ordering destination \
+    --algorithm dqn \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.993 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --dqn_lr 0.9 \
+    --dqn_lr_lower 0.1 \
+    --dqn_lr_upper 0.99 \
+    --numberofFlowsPerAgent 5 \
+    --hidden_layers 1 \
+    --tablesize 50
+
+# [121] speculativereactive_speculation_efficiency / ppo / trace / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.62 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.995 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [122] speculativereactive_speculation_efficiency / ppo / trace / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.62 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.995 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [123] speculativereactive_speculation_efficiency / ppo / trace / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.62 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.995 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [124] speculativereactive_speculation_efficiency / ppo / trace / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.62 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.995 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [125] speculativereactive_speculation_efficiency / ppo / trace / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 7.62 \
+    --ordering trace \
+    --algorithm ppo \
+    --gamma 0.95 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.995 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 1 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [126] speculativereactive_speculation_efficiency / ppo / source / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.73 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0003 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [127] speculativereactive_speculation_efficiency / ppo / source / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.73 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0003 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [128] speculativereactive_speculation_efficiency / ppo / source / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.73 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0003 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [129] speculativereactive_speculation_efficiency / ppo / source / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.73 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0003 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [130] speculativereactive_speculation_efficiency / ppo / source / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.73 \
+    --ordering source \
+    --algorithm ppo \
+    --gamma 0.75 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.95 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.95 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.0003 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 4 \
+    --tablesize 50
+
+# [131] speculativereactive_speculation_efficiency / ppo / destination / tuning_seed=101
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 101 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.55 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [132] speculativereactive_speculation_efficiency / ppo / destination / tuning_seed=103
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 103 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.55 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [133] speculativereactive_speculation_efficiency / ppo / destination / tuning_seed=107
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 107 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.55 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [134] speculativereactive_speculation_efficiency / ppo / destination / tuning_seed=109
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 109 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.55 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
+
+# [135] speculativereactive_speculation_efficiency / ppo / destination / tuning_seed=113
+python start_tuning.py \
+    --fresh_start False \
+    --tuning_seed 113 \
+    --objective speculativereactive_speculation_efficiency \
+    --current_value 10.55 \
+    --ordering destination \
+    --algorithm ppo \
+    --gamma 0.9 \
+    --gamma_lower 0.7 \
+    --gamma_upper 0.999 \
+    --rewardAgingFactor 0.9 \
+    --rewardAgingFactor_lower 0.7 \
+    --rewardAgingFactor_upper 0.999 \
+    --spatialReward 0.9 \
+    --spatialReward_lower 0.7 \
+    --spatialReward_upper 0.999 \
+    --agingfactor 0.997 \
+    --agingfactor_lower 0.7 \
+    --agingfactor_upper 0.999 \
+    --ppo_lr 0.001 \
+    --ppo_lr_lower 0.0001 \
+    --ppo_lr_upper 0.001 \
+    --hidden_layers 2 \
+    --ppo_epochs 8 \
+    --tablesize 50
