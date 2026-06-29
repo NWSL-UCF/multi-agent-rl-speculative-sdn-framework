@@ -26,6 +26,8 @@ except ImportError:  # pragma: no cover - jd is only available where workers run
 
 logger = get_logger()
 
+_initialized = False
+
 
 def _retry_sleep(reason, attempt):
     delay = random.uniform(RETRY_SLEEP_MIN, RETRY_SLEEP_MAX)
@@ -34,7 +36,10 @@ def _retry_sleep(reason, attempt):
 
 
 def init(env_file):
-    """Initialise jd from the credentials .env file."""
+    """Initialise jd from the credentials .env file (idempotent)."""
+    global _initialized
+    if _initialized:
+        return
     if jd is None:
         raise RuntimeError(
             "The 'jd' package is not installed in this environment. Install jd-worker "
@@ -45,7 +50,18 @@ def init(env_file):
         raise FileNotFoundError(f"jd env file not found: {env_path}")
     logger.info(f"Initialising jd from {env_path}")
     jd.init(str(env_path))
+    _initialized = True
     logger.info(f"jd initialised. exp_path={jd.exp_path()}")
+
+
+def job_dir():
+    """Return the current jd job directory (requires ``init`` first)."""
+    if jd is None:
+        raise RuntimeError(
+            "The 'jd' package is not installed in this environment. Install jd-worker "
+            "(see requirements.txt) before running the orchestrator."
+        )
+    return Path(jd.jd_job_dir())
 
 
 def list_all_jobs():
