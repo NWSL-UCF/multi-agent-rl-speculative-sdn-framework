@@ -30,7 +30,7 @@ DOWNLOAD_MAX_RETRIES = 8
 NEW_ID_POLL_ATTEMPTS = 6
 
 # Default location of the jd credentials .env file (kept OUTSIDE the repo).
-DEFAULT_ENV_FILE = "/home/ab823254/data/ternary-search.env"
+DEFAULT_ENV_FILE = "~/data/ternary-search.env"
 
 # Same default as code/main.py --base_path.
 DEFAULT_BASE_PATH = (
