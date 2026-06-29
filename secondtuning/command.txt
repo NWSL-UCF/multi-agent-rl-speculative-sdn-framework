@@ -1,13 +1,11 @@
-# Two JobDistributor queues:
-#   second-tuning  — orchestrator jobs (27 rows from commands.csv)
-#   ternary-search — simulation jobs (18 per tuning iteration)
-
-# 1) Upload orchestrator jobs (run once from login node):
+# Jobs already uploaded to second-tuning via jd dashboard (commands.csv).
+#
+# 1) Orchestrator workers (second-tuning):
 cd secondtuning
-python start_tuning.py --csv commands.csv
-
-# 2) Start orchestrator workers (second-tuning queue):
-jd_worker_cli expId=second-tuning entry_script=run_tuning.py
-
-# 3) Start simulation workers (ternary-search queue):
+jd_worker_cli expId=second-tuning entry_script=start_tuning.py
+#
+# Or via slurm:
+#   sbatch run.slurm
+#
+# 2) Simulation workers (ternary-search, 18 jobs per tuning iteration):
 jd_worker_cli expId=ternary-search entry_script=../code/main.py

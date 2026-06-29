@@ -1,23 +1,15 @@
-"""Upload second-tuning orchestrator jobs from commands.csv to JobDistributor.
+"""JD worker entry for second-tuning orchestrator jobs.
 
-This script does **not** run tuning. It reads ``commands.csv`` and creates one
-job per row on the **second-tuning** experiment. Workers pick those up via::
+Jobs are already on the **second-tuning** queue (uploaded via the jd dashboard
+from ``commands.csv``). Start workers with::
 
-    jd_worker_cli expId=second-tuning entry_script=run_tuning.py
+    jd_worker_cli expId=second-tuning entry_script=start_tuning.py
 
-Each worker run then submits simulation midpoint jobs to **ternary-search**.
-
-Examples
---------
-cd secondtuning
-python start_tuning.py --csv commands.csv
-
-Preview without uploading::
-
-    python start_tuning.py --csv commands.csv --dry_run
+Each run performs ternary search and submits 18 simulation jobs per iteration
+to **ternary-search**.
 """
 
-from tuner.submit import main
+from tuner.app import main
 
 if __name__ == "__main__":
     main()

@@ -1,62 +1,46 @@
 # Second-tuning (JobDistributor)
 
-Two separate jd experiments:
+Orchestrator jobs are on the **second-tuning** queue (upload `commands.csv` via the
+jd dashboard). Workers run one tuning job each; each iteration submits **18**
+simulation jobs to **ternary-search**.
 
 | Experiment | Role | Entry script |
 | --- | --- | --- |
-| **second-tuning** | One orchestrator job per `commands.csv` row | `run_tuning.py` |
-| **ternary-search** | Simulation jobs (18 per tuning iteration) | `code/main.py` |
-
-Each tuning iteration evaluates left/right midpoints → **2 × 3 traces × 3 seeds = 18** jobs on **ternary-search**.
+| **second-tuning** | Ternary-search orchestrator (one row per job) | `start_tuning.py` |
+| **ternary-search** | Simulation midpoints (3 traces × 3 seeds × 2 sides) | `code/main.py` |
 
 ## Setup
 
 1. `pip install -r requirements.txt` (needs `jd-worker`).
-2. Credentials in `.env` (default `/jet/home/arouf/data/ternary-search.env`):
+2. Set `JD_API_KEY` (and optional `JD_HUB_URL`) in the environment or `.env`.
 
-   ```
-   JD_API_KEY=jd_...
-   ```
+## Run workers
 
-   Experiment ids are set in code (`second-tuning`, `ternary-search`).
-
-## Workflow
-
-### 1. Upload orchestrator jobs (login node)
+### Orchestrator (second-tuning)
 
 ```bash
 cd secondtuning
-python start_tuning.py --csv commands.csv
+jd_worker_cli expId=second-tuning entry_script=start_tuning.py
 ```
 
-### 2. Run orchestrator workers
+Or on PSC:
 
 ```bash
-cd secondtuning
-jd_worker_cli expId=second-tuning entry_script=run_tuning.py
+sbatch run.slurm
 ```
 
-Each job receives CSV columns as CLI flags (`--objective`, `--algorithm`, tunable params, …).
+jd passes each CSV column as a CLI flag (`--objective`, `--algorithm`, tunable
+params, …). Checkpoints go to `jd.jd_job_dir()`.
 
-### 3. Run simulation workers
+### Simulation (ternary-search)
 
 ```bash
 jd_worker_cli expId=ternary-search entry_script=code/main.py
 ```
 
-These execute the 18 midpoint evaluations per tuning iteration.
-
-## Scripts
-
-| Script | Purpose |
-| --- | --- |
-| `start_tuning.py` | Submit rows from `commands.csv` → **second-tuning** |
-| `run_tuning.py` | Worker entry for **second-tuning** (runs ternary search loop) |
-| `code/main.py` | Worker entry for **ternary-search** (single simulation) |
-
 ## Output
 
-Orchestrator checkpoints/logs: `jd.jd_job_dir()` on the **second-tuning** worker.
+Under each **second-tuning** job directory:
 
-Simulation results: uploaded by `main.py` workers on **ternary-search**, downloaded into
-`<second-tuning-job-dir>/jobs/<sim-job-id>/`.
+- `tuning_log.txt`, `checkpoint.json`, `best_objective_history.csv`
+- `jobs/<sim-job-id>/` — downloaded results from **ternary-search**

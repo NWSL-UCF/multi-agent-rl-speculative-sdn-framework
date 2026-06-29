@@ -24,6 +24,10 @@ def str2bool(value):
     return str(value).strip().lower() in {"1", "true", "yes", "y", "t"}
 
 
+def _is_empty(value):
+    return value is None or str(value).strip() == ""
+
+
 def parse_passthrough(unknown):
     """Turn leftover ``--key value`` argv tokens into a dict of strings."""
     params = {}
@@ -34,10 +38,13 @@ def parse_passthrough(unknown):
             key = token[2:]
             if "=" in key:
                 k, v = key.split("=", 1)
-                params[k] = v
+                if not _is_empty(v):
+                    params[k] = v
                 i += 1
             elif i + 1 < len(unknown) and not unknown[i + 1].startswith("--"):
-                params[key] = unknown[i + 1]
+                value = unknown[i + 1]
+                if not _is_empty(value):
+                    params[key] = value
                 i += 2
             else:
                 params[key] = "True"  # bare flag with no value
@@ -86,10 +93,6 @@ def parse_args(argv=None):
     control, unknown = parser.parse_known_args(argv)
     job_params = parse_passthrough(unknown)
     return control, job_params
-
-
-def _is_empty(value):
-    return value is None or str(value).strip() == ""
 
 
 def parse_aligned_lists(control):
