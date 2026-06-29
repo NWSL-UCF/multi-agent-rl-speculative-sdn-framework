@@ -15,7 +15,6 @@ from pathlib import Path
 from .config import (
     DOWNLOAD_MAX_RETRIES,
     LIST_MAX_RETRIES,
-    NEW_ID_POLL_ATTEMPTS,
     ORCHESTRATOR_EXP_ID,
     RESULT_FILES,
     RETRY_SLEEP_MIN,
@@ -83,35 +82,33 @@ def job_dir():
     return Path(jd.jd_job_dir())
 
 
-def list_all_jobs():
-    """Return every job dict for the active experiment, with retries."""
+def get_job_statuses(job_ids):
+    """Return a ``{job_id: status}`` map for the given IDs, with retries.
+
+    Uses ``GET /api/jobs/statuses`` which runs a single
+    ``SELECT id, status FROM jobs WHERE id = ANY(%s)`` — no SELECT *,
+    no COUNT, no pagination.
+    """
     _require_jd()
+    id_list = list(job_ids)
     for attempt in range(1, LIST_MAX_RETRIES + 1):
         try:
-            page = jd.list_jobs(fetch_all=True)
-            return page.get("jobs") or []
-        except Exception as exc:  # noqa: BLE001 - network errors are expected
-            _retry_sleep(f"list_jobs failed: {exc}", attempt)
-    logger.error("list_jobs failed after maximum retries; returning empty list.")
-    return []
-
-
-def max_job_id():
-    return max((int(j["id"]) for j in list_all_jobs()), default=0)
-
-
-def new_ids_since(since_id):
-    jobs = list_all_jobs()
-    return sorted(int(j["id"]) for j in jobs if int(j["id"]) > since_id)
+            return jd.get_job_statuses(id_list)
+        except Exception as exc:  # noqa: BLE001
+            _retry_sleep(f"get_job_statuses failed: {exc}", attempt)
+    logger.error("get_job_statuses failed after maximum retries; returning empty dict.")
+    return {}
 
 
 def _create_jobs_impl(param_dicts):
+    """Submit *param_dicts* as jobs and return their IDs.
+
+    The server always returns ``start_id`` — the first ID in the atomically
+    assigned contiguous batch — so IDs are reconstructed as
+    ``range(start_id, start_id + N)`` with no polling and no race condition.
+    """
     expected = len(param_dicts)
-    before = max_job_id()
-    logger.info(
-        f"Creating {expected} job(s) on experiment '{_active_exp_id}' "
-        f"(max existing id={before})"
-    )
+    logger.info(f"Creating {expected} job(s) on experiment '{_active_exp_id}'")
 
     attempt = 0
     while True:
@@ -119,25 +116,18 @@ def _create_jobs_impl(param_dicts):
         try:
             result = jd.create_jobs(param_dicts)
             logger.info(f"create_jobs response: {result}")
-            break
+            start_id = result.get("start_id")
+            if start_id is None:
+                raise RuntimeError("Server did not return start_id in response")
+            # IDs are a contiguous range: the server assigns them as start_id+0,
+            # start_id+1, ..., start_id+N-1 in a single atomic batch INSERT.
+            job_ids = list(range(start_id, start_id + expected))
+            logger.info(f"Created job ids: {job_ids}")
+            return job_ids
         except Exception as exc:  # noqa: BLE001
-            _retry_sleep(f"create_jobs failed: {exc}", attempt)
-
-    new_ids = []
-    for poll in range(NEW_ID_POLL_ATTEMPTS):
-        new_ids = new_ids_since(before)
-        if len(new_ids) >= expected:
-            chosen = new_ids[-expected:]
-            logger.info(f"Created job ids: {chosen}")
-            return chosen
-        logger.info(f"Waiting for created ids to appear ({len(new_ids)}/{expected}); poll {poll + 1}")
-        time.sleep(RETRY_SLEEP_MIN)
-
-    logger.warning(
-        f"Only {len(new_ids)} of {expected} new job ids appeared: {new_ids}. "
-        f"Proceeding with what is available."
-    )
-    return new_ids
+            delay = random.uniform(0, 60)
+            logger.warning(f"create_jobs failed: {exc} (attempt {attempt}); retrying in {delay:.1f}s")
+            time.sleep(delay)
 
 
 def create_orchestrator_jobs(param_dicts, env_file: str):
@@ -170,15 +160,19 @@ def download(job_id, filename, dest_path, env_file: str):
 
 
 def wait_and_download(job_ids, jobs_dir, poll_interval, env_file: str):
-    """Poll ternary-search until every simulation job is DONE and download results."""
+    """Poll ternary-search until every simulation job is DONE and download results.
+
+    Polls only the specific job IDs via ``get_job_statuses`` — a single
+    ``SELECT id, status`` query with no SELECT *, COUNT, or pagination.
+    """
     ensure_simulation(env_file)
-    pending = set(job_ids)
+    pending = set(int(j) for j in job_ids)
     done = set()
     failed = set()
 
     logger.info(f"Waiting for {len(pending)} simulation job(s): {sorted(pending)}")
     while pending:
-        status = {int(j["id"]): str(j.get("status", "")).upper() for j in list_all_jobs()}
+        status = {jid: st.upper() for jid, st in get_job_statuses(pending).items()}
 
         aborted = {}
         for job_id in sorted(pending):

@@ -20,7 +20,7 @@ CONVERGENCE_EPS = 1e-4
 MIDPOINT_PRECISION = 4
 
 # How often (seconds) to poll job status while waiting for results.
-POLL_INTERVAL = 120
+POLL_INTERVAL = 300
 
 # Retry knobs (seconds / attempt counts).
 RETRY_SLEEP_MIN = 5
