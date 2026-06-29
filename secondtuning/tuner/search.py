@@ -90,7 +90,7 @@ def _evaluate_midpoints(ctx, tunable_state, param_name, mid_left, mid_right, ite
     ml_jobs = submit_point(ctx, tunable_state, param_name, mid_left, "mid_left", iter_tag)
     mr_jobs = submit_point(ctx, tunable_state, param_name, mid_right, "mid_right", iter_tag)
 
-    jd_client.wait_and_download(ml_jobs + mr_jobs, ctx.jobs_dir, ctx.poll_interval)
+    jd_client.wait_and_download(ml_jobs + mr_jobs, ctx.jobs_dir, ctx.poll_interval, ctx.env_file)
 
     ml_obj, _, _ = score_point(ctx, ml_jobs, mid_left, "mid_left", iter_tag)
     mr_obj, _, _ = score_point(ctx, mr_jobs, mid_right, "mid_right", iter_tag)

@@ -47,7 +47,7 @@ def submit_point(ctx, tunable_state, param_name, point_value, side, iter_tag):
     logger.info(f"Submitting {param_name}={point_value} [{side}] ({iter_tag})")
 
     job_dicts = build_point_jobs(ctx, tunable_state, param_name, point_value)
-    job_ids = jd_client.create_jobs(job_dicts)
+    job_ids = jd_client.create_simulation_jobs(job_dicts, ctx.env_file)
     record_job_mapping(ctx.run_dir, iter_tag, param_name, side, point_value, job_dicts, job_ids)
     return job_ids
 

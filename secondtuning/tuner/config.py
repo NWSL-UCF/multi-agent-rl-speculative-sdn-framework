@@ -32,6 +32,10 @@ NEW_ID_POLL_ATTEMPTS = 6
 # Default location of the jd credentials .env file (kept OUTSIDE the repo).
 DEFAULT_ENV_FILE = "/jet/home/arouf/data/ternary-search.env"
 
+# JobDistributor experiment ids.
+ORCHESTRATOR_EXP_ID = "second-tuning"
+SIMULATION_EXP_ID = "ternary-search"
+
 # Same default as code/main.py --base_path.
 DEFAULT_BASE_PATH = (
     "/home/ab823254/data/multi-agent-rl-speculative-sdn-framework/results/debug"

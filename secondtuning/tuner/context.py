@@ -20,6 +20,7 @@ class RunContext:
     tunable_order: List[str]     # original CLI order of tunable params (for CSV columns)
     traces: List[int]
     seeds: List[int]
+    env_file: str                # jd credentials for simulation job queue
     jobs_dir: Path = field(init=False)
     agg_dir: Path = field(init=False)
 

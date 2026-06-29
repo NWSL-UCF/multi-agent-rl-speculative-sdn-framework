@@ -70,6 +70,8 @@ def _log_configuration(control, ctx, mode, metric, tunable, sdp, lb, ub, base_pa
     logger.info(f"  poll_interval     : {ctx.poll_interval}s")
     logger.info(f"  fresh_start       : {control.fresh_start}")
     logger.info(f"  run_dir           : {ctx.run_dir}")
+    logger.info(f"  env_file          : {ctx.env_file}")
+    logger.info(f"  simulation exp    : ternary-search")
     logger.info(f"  static job params : {ctx.job_params}")
 
 
@@ -93,7 +95,6 @@ def _resolve_state(control, ctx, mode, metric, tunable, sdp, lb, ub):
 
 def main(argv=None):
     control, raw_job_params = parse_args(argv)
-    jd_client.init(control.env_file)
 
     mode, metric = parse_objective(control.objective)
     tunable, sdp, lb, ub = resolve_tunable_spec(control, raw_job_params)
@@ -118,6 +119,7 @@ def main(argv=None):
         tunable_order=tunable,
         traces=traces,
         seeds=seeds,
+        env_file=control.env_file,
     )
 
     setup_logging(ctx.run_dir)
