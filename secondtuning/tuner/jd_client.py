@@ -6,6 +6,8 @@ Two experiments are used:
 - **ternary-search** — simulation jobs (9 per midpoint × 2 midpoints = 18 per iteration).
 """
 
+from __future__ import annotations
+
 import random
 import time
 from pathlib import Path
