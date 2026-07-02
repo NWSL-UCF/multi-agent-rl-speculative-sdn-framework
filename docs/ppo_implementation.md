@@ -17,15 +17,17 @@ clipped-surrogate objective.
 
 ## 2. DQN vs PPO at a glance
 
-| Aspect | DQN | PPO |
-| --- | --- | --- |
-| Family | value-based | policy-gradient (actor-critic) |
-| Networks | `num_agents` Q-nets + target nets | one actor-critic net |
-| Action space | one integer in `2^k` per agent | `num_flows` independent Bernoulli bits |
-| Exploration | epsilon-greedy | policy entropy (stochastic sampling) |
-| Data usage | off-policy replay buffer | on-policy rollout, then discarded |
-| Update trigger | every LTI once buffer full | every `rollout_len` LTIs |
-| Uses `reward_list`? | no (uses `agent_rewards`) | yes (summed to a scalar step reward) |
+
+| Aspect              | DQN                               | PPO                                    |
+| ------------------- | --------------------------------- | -------------------------------------- |
+| Family              | value-based                       | policy-gradient (actor-critic)         |
+| Networks            | `num_agents` Q-nets + target nets | one actor-critic net                   |
+| Action space        | one integer in `2^k` per agent    | `num_flows` independent Bernoulli bits |
+| Exploration         | epsilon-greedy                    | policy entropy (stochastic sampling)   |
+| Data usage          | off-policy replay buffer          | on-policy rollout, then discarded      |
+| Update trigger      | every LTI once buffer full        | every `rollout_len` LTIs               |
+| Uses `reward_list`? | no (uses `agent_rewards`)         | yes (summed to a scalar step reward)   |
+
 
 The action space is the headline change. With `num_flows = 25`, PPO's actor has
 **25 outputs**, versus DQN's `3 x 1024`. PPO scales linearly in the number of
@@ -46,17 +48,16 @@ state (dim = num_flows)
 ```
 
 - Input dim = `num_states = num_flows = 25` (the state is the previous install
-  mask; see note below).
+mask; see note below).
 - Actor output = `num_flows` logits. Each logit `z_i` defines
-  `P(install flow i) = sigmoid(z_i)`. The flows are **conditionally
-  independent** given the state — this is the "factored" policy.
+`P(install flow i) = sigmoid(z_i)`. The flows are **conditionally
+independent** given the state — this is the "factored" policy.
 - Critic output = a single scalar `V(s)` used as a variance-reduction baseline.
 - Hidden size defaults to 64 (`--hidden_layer_size` overrides), with
-  `--hidden_layers` layers (default 2).
+`--hidden_layers` layers (default 2).
 
 > State note: `num_states = num_flows` (line 60) so the simulation's
-> `current_state = torch.zeros(num_states)` and `next_state =
-> torch.FloatTensor(action_list)` line up dimensionally. The state is the
+> `current_state = torch.zeros(num_states)` and `next_state = torch.FloatTensor(action_list)` line up dimensionally. The state is the
 > previous binary decision — degenerate, like DQN's, but PPO does not depend on
 > it being meaningful.
 
@@ -123,6 +124,7 @@ if len(self.buffer) < self.rollout_len:
 ```
 
 ### 6.1 Advantage estimation (GAE)
+
 `_compute_gae` (lines 161-172) computes, walking backwards through the rollout:
 
 ```
@@ -138,6 +140,7 @@ The final step bootstraps with `V(next_state)` of the last transition
 DQN got from its Bellman bootstrap.
 
 ### 6.2 The clipped-surrogate update
+
 For `ppo_epochs` passes over the same rollout (lines 205-222):
 
 ```python
@@ -150,11 +153,11 @@ loss = policy_loss + value_coef * value_loss - entropy_coef * entropy
 ```
 
 - `policy_loss` pushes probability toward actions with positive advantage, but
-  the `clamp` to `[1-clip, 1+clip]` prevents any single update from moving the
-  policy too far — this is the core PPO idea that keeps training stable.
+the `clamp` to `[1-clip, 1+clip]` prevents any single update from moving the
+policy too far — this is the core PPO idea that keeps training stable.
 - `value_loss` trains the critic toward the GAE returns.
 - `-entropy_coef * entropy` rewards a less-certain policy, which is PPO's
-  exploration mechanism (the analogue of DQN's epsilon).
+exploration mechanism (the analogue of DQN's epsilon).
 
 After the epochs, `self.buffer = []` (line 225) discards the data — on-policy.
 
@@ -163,38 +166,40 @@ After the epochs, `self.buffer = []` (line 225) discards the data — on-policy.
 ## 7. The interface no-ops
 
 - `decay_epsilon_for_all_agents()` (lines 227-229): no-op. PPO explores via
-  entropy, not epsilon.
+entropy, not epsilon.
 - `get_average_epsilon()` (lines 231-233): returns 0.0 for logging
-  compatibility.
+compatibility.
 
 ---
 
 ## 8. End-to-end example of one rollout (rollout_len = 32)
 
 1. For 32 consecutive LTIs: `select_actions` samples a 25-bit install mask and
-   caches `(state, action, log_prob, value)`; the simulation installs and
+  caches `(state, action, log_prob, value)`; the simulation installs and
    computes `reward_list`; `store_transitions` appends `sum(reward_list)`.
 2. On the 32nd `learn()` call the buffer is full:
-   - compute GAE advantages + returns over the 32 steps,
-   - normalize advantages,
-   - run `ppo_epochs` (4) gradient updates of the clipped objective,
-   - clear the buffer.
+  - compute GAE advantages + returns over the 32 steps,
+  - normalize advantages,
+  - run `ppo_epochs` (4) gradient updates of the clipped objective,
+  - clear the buffer.
 3. Steps 1-2 repeat for the next 32 LTIs.
 
 ---
 
 ## 9. Relevant CLI parameters
 
-PPO-only (prefixed `ppo_` in `code/main.py`):
+PPO-only (prefixed `ppo`_ in `code/main.py`):
 
-| Flag | Default | Meaning |
-| --- | --- | --- |
-| `--ppo_lr` | 3e-4 | Adam learning rate (note: far smaller than `--dqn_lr=0.5`) |
-| `--ppo_clip` | 0.2 | clip range epsilon for the surrogate ratio |
-| `--ppo_epochs` | 4 | gradient passes per rollout |
-| `--ppo_entropy_coef` | 0.01 | exploration bonus weight |
-| `--ppo_value_coef` | 0.5 | critic loss weight |
-| `--ppo_gae_lambda` | 0.95 | GAE bias/variance trade-off |
+
+| Flag                 | Default | Meaning                                                    |
+| -------------------- | ------- | ---------------------------------------------------------- |
+| `--ppo_lr`           | 3e-4    | Adam learning rate (note: far smaller than `--dqn_lr=0.5`) |
+| `--ppo_clip`         | 0.2     | clip range epsilon for the surrogate ratio                 |
+| `--ppo_epochs`       | 4       | gradient passes per rollout                                |
+| `--ppo_entropy_coef` | 0.01    | exploration bonus weight                                   |
+| `--ppo_value_coef`   | 0.5     | critic loss weight                                         |
+| `--ppo_gae_lambda`   | 0.95    | GAE bias/variance trade-off                                |
+
 
 Shared with DQN: `--gamma`, `--hidden_layers`, `--hidden_layer_size`,
 `--batch_size` (reused as the rollout length), `--numberofFlowsPerAgent`.
@@ -207,8 +212,9 @@ applied by `RewardFunction`, exactly as for DQN.
 ## 10. Why PPO for this problem
 
 - The factored Bernoulli policy makes the action space linear in `num_flows`
-  instead of exponential, directly addressing DQN's main weakness.
+instead of exponential, directly addressing DQN's main weakness.
 - The critic baseline + clipping make policy-gradient learning stable even with
-  the noisy, near-bandit reward signal.
+the noisy, near-bandit reward signal.
 - It is the de-facto modern policy-gradient baseline, so it is a natural
-  comparison point against the value-based DQN and the non-deep bandit.
+comparison point against the value-based DQN and the non-deep bandit.
+
