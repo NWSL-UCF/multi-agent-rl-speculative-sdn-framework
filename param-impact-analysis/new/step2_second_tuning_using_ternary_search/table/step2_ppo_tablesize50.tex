@@ -1,0 +1,18 @@
+% Requires: \usepackage{booktabs}
+\begin{table*}[t]
+\centering
+\caption{Best ternary-search configuration for PPO (SFT size = 50). Reactive baseline hit rate: 67.87\%. AF=Aging Factor, RAF=Reward Aging Factor, SR=Spatial Reward. Only hyperparameters refined by ternary search are shown; all other settings are fixed at the best grid-search values from Step~1. Improv.\ columns report hit-rate gain over reactive (\%). Grid Improv.\ columns report the objective gain over the Step~1 grid-search starting point (hit rate in percentage points; speculation efficiency as an absolute difference).}
+\label{tab:step2-ppo-tablesize50}
+\small
+\begin{tabular}{@{}lccccccccccccccccccccccc@{}}
+\toprule
+& \multicolumn{8}{c}{Spec. HR} & \multicolumn{8}{c}{Spec.+Reac. HR} & \multicolumn{7}{c}{Spec. Eff.} \\
+\cmidrule(lr){2-9} \cmidrule(lr){10-17} \cmidrule(lr){18-24}
+Flow Order & AF & RAF & SR & $\gamma$ & LR & HR(%) & Improv. & Grid Improv. & AF & RAF & SR & $\gamma$ & LR & HR(%) & Improv. & Grid Improv. & AF & RAF & SR & $\gamma$ & LR & Eff. & Grid Improv. \\
+\midrule
+Src & 0.999 & 0.90 & 0.75 & 0.75 & 0.0001 & 20.40 & -47.47 & +0.00 & 0.993 & 0.89 & 0.96 & 0.81 & 0.001 & 68.92 & +1.05 & +0.25 & 0.997 & 0.96 & 0.95 & 0.73 & 0.0003 & 11.35 & +0.62 \\
+Dest & 0.9988 & 0.90 & 0.75 & 0.75 & 0.0001 & 29.37 & -38.50 & +0.19 & 0.993 & 0.75 & 0.95 & 0.75 & 0.0001 & 68.89 & +1.02 & +0.03 & 0.997 & 0.90 & 0.90 & 0.90 & 0.001 & 10.55 & +0.00 \\
+Trace & 0.997 & 0.90 & 0.75 & 0.90 & 0.001 & 31.05 & -36.82 & +0.00 & 0.9495 & 0.87 & 0.75 & 0.95 & 0.001 & 76.36 & +8.49 & +1.33 & 0.9955 & 0.95 & 0.95 & 0.95 & 0.001 & 7.98 & +0.36 \\
+\bottomrule
+\end{tabular}
+\end{table*}

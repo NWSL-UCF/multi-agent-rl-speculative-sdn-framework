@@ -1,0 +1,12 @@
+{
+    "reactive_hitrate": 67.87,
+    "algorithm": "bandit",
+    "ordering": "trace",
+    "params": {
+        "agingfactor": 0.9934,
+        "rewardAgingFactor": 0.9216,
+        "spatialReward": 0.8781,
+        "bandit_c": 10.0
+    },
+    "speculation_efficiency": 14.22
+}

@@ -1,0 +1,18 @@
+% Requires: \usepackage{booktabs}
+\begin{table*}[t]
+\centering
+\caption{Best ternary-search configuration for Bandit (SFT size = 50). Reactive baseline hit rate: 67.87\%. AF=Aging Factor, RAF=Reward Aging Factor, SR=Spatial Reward. Only hyperparameters refined by ternary search are shown; all other settings are fixed at the best grid-search values from Step~1. Improv.\ columns report hit-rate gain over reactive (\%). Grid Improv.\ columns report the objective gain over the Step~1 grid-search starting point (hit rate in percentage points; speculation efficiency as an absolute difference).}
+\label{tab:step2-bandit-tablesize50}
+\small
+\begin{tabular}{@{}lcccccccccccccccccccc@{}}
+\toprule
+& \multicolumn{7}{c}{Spec. HR} & \multicolumn{7}{c}{Spec.+Reac. HR} & \multicolumn{6}{c}{Spec. Eff.} \\
+\cmidrule(lr){2-8} \cmidrule(lr){9-15} \cmidrule(lr){16-21}
+Flow Order & AF & RAF & SR & c & HR(%) & Improv. & Grid Improv. & AF & RAF & SR & c & HR(%) & Improv. & Grid Improv. & AF & RAF & SR & c & Eff. & Grid Improv. \\
+\midrule
+Src & 0.999 & 0.90 & 0.75 & 5 & 49.42 & -18.45 & +0.00 & 0.993 & 0.90 & 0.82 & 0.01 & 69.59 & +1.72 & +0.24 & 0.9932 & 0.90 & 0.90 & 1 & 13.11 & +1.29 \\
+Dest & 0.999 & 0.90 & 0.75 & 5 & 48.42 & -19.45 & +0.00 & 0.993 & 0.88 & 0.90 & 0.0485 & 69.20 & +1.33 & +0.10 & 0.997 & 0.75 & 0.90 & 0.2 & 11.77 & +0.00 \\
+Trace & 0.997 & 0.90 & 0.75 & 5 & 50.28 & -17.59 & +0.00 & 0.9247 & 0.95 & 0.89 & 0.05 & 81.21 & +13.34 & +0.39 & 0.9934 & 0.92 & 0.88 & 10 & 14.22 & +2.67 \\
+\bottomrule
+\end{tabular}
+\end{table*}

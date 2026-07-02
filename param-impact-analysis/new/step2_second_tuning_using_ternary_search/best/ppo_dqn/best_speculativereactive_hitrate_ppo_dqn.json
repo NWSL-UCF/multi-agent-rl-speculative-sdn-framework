@@ -1,0 +1,15 @@
+{
+    "reactive_hitrate": 67.87,
+    "algorithm": "ppo",
+    "ordering": "trace",
+    "params": {
+        "agingfactor": 0.9495,
+        "rewardAgingFactor": 0.8688,
+        "spatialReward": 0.75,
+        "gamma": 0.9531,
+        "ppo_lr": 0.001,
+        "hidden_layers": 2,
+        "ppo_epochs": 8
+    },
+    "hitrate": 76.36
+}

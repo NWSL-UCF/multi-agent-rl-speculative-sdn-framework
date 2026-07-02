@@ -1,0 +1,32 @@
+% Requires: \usepackage{booktabs,multirow}
+\begin{table}[t]
+\centering
+\caption{Ternary-search tunable parameters and search bounds.
+Each run starts from the best grid-search configuration for its
+(objective, RL method, ordering) triple; the reported \texttt{current\_value}
+is the corresponding grid-search objective.
+All other hyperparameters remain fixed at their grid-search values
+(Table~1).}
+\label{tab:ternary-search-tunable-params}
+\begin{tabular}{|l|l|c|c|}
+\hline
+\textbf{RL method} & \textbf{Parameter (shorthand)} & \textbf{Lower} & \textbf{Upper} \\
+\hline
+\multirow{3}{*}{Shared}
+  & Reward Aging Factor ($\alpha_r$) & 0.7 & 0.999 \\
+  & Spatial Reward Decay ($\beta$) & 0.7 & 0.999 \\
+  & Aging Factor ($\alpha_a$) & 0.7 & 0.999 \\
+\hline
+\multirow{2}{*}{DQN}
+  & Discount Factor ($\gamma$) & 0.7 & 0.999 \\
+  & Learning Rate ($\alpha_{\mathrm{dqn}}$) & 0.1 & 0.99 \\
+\hline
+\multirow{2}{*}{PPO}
+  & Discount Factor ($\gamma$) & 0.7 & 0.999 \\
+  & Learning Rate ($\eta_{\mathrm{ppo}}$) & $10^{-4}$ & $10^{-3}$ \\
+\hline
+Bandit
+  & Exploration Constant ($c$) & 0.001 & 100.0 \\
+\hline
+\end{tabular}
+\end{table}

@@ -1,0 +1,15 @@
+{
+    "reactive_hitrate": 67.87,
+    "algorithm": "dqn",
+    "ordering": "trace",
+    "params": {
+        "agingfactor": 0.999,
+        "rewardAgingFactor": 0.9,
+        "spatialReward": 0.75,
+        "numberofFlowsPerAgent": 5,
+        "gamma": 0.9023,
+        "dqn_lr": 0.5383,
+        "hidden_layers": 2
+    },
+    "hitrate": 31.93
+}

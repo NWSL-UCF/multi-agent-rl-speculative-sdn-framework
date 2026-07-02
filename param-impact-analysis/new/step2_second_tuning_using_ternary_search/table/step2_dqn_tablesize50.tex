@@ -1,0 +1,18 @@
+% Requires: \usepackage{booktabs}
+\begin{table*}[t]
+\centering
+\caption{Best ternary-search configuration for DQN (SFT size = 50). Reactive baseline hit rate: 67.87\%. AF=Aging Factor, RAF=Reward Aging Factor, SR=Spatial Reward. Only hyperparameters refined by ternary search are shown; all other settings are fixed at the best grid-search values from Step~1. Improv.\ columns report hit-rate gain over reactive (\%). Grid Improv.\ columns report the objective gain over the Step~1 grid-search starting point (hit rate in percentage points; speculation efficiency as an absolute difference).}
+\label{tab:step2-dqn-tablesize50}
+\small
+\begin{tabular}{@{}lccccccccccccccccccccccc@{}}
+\toprule
+& \multicolumn{8}{c}{Spec. HR} & \multicolumn{8}{c}{Spec.+Reac. HR} & \multicolumn{7}{c}{Spec. Eff.} \\
+\cmidrule(lr){2-9} \cmidrule(lr){10-17} \cmidrule(lr){18-24}
+Flow Order & AF & RAF & SR & $\gamma$ & LR & HR(%) & Improv. & Grid Improv. & AF & RAF & SR & $\gamma$ & LR & HR(%) & Improv. & Grid Improv. & AF & RAF & SR & $\gamma$ & LR & Eff. & Grid Improv. \\
+\midrule
+Src & 0.999 & 0.90 & 0.75 & 0.95 & 0.90 & 20.84 & -47.03 & +0.11 & 0.993 & 0.90 & 0.95 & 0.90 & 0.76 & 68.68 & +0.81 & +0.13 & 0.9947 & 0.95 & 0.75 & 0.93 & 0.95 & 13.89 & +1.92 \\
+Dest & 0.999 & 0.90 & 0.75 & 0.95 & 0.75 & 29.44 & -38.43 & +0.00 & 0.993 & 0.75 & 0.95 & 0.95 & 0.75 & 68.83 & +0.96 & +0.09 & 0.9931 & 0.89 & 0.90 & 0.91 & 0.91 & 11.20 & +1.40 \\
+Trace & 0.999 & 0.90 & 0.75 & 0.90 & 0.54 & 31.93 & -35.94 & +0.51 & 0.95 & 0.91 & 0.75 & 0.91 & 0.91 & 75.48 & +7.61 & +0.78 & 0.991 & 0.74 & 0.75 & 0.89 & 0.50 & 8.40 & +1.19 \\
+\bottomrule
+\end{tabular}
+\end{table*}

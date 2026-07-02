@@ -1,0 +1,15 @@
+{
+    "reactive_hitrate": 67.87,
+    "algorithm": "dqn",
+    "ordering": "source",
+    "params": {
+        "agingfactor": 0.9947,
+        "rewardAgingFactor": 0.9515,
+        "spatialReward": 0.75,
+        "numberofFlowsPerAgent": 10,
+        "gamma": 0.9263,
+        "dqn_lr": 0.9542,
+        "hidden_layers": 1
+    },
+    "speculation_efficiency": 13.89
+}
