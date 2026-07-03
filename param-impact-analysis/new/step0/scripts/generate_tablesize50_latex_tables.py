@@ -39,6 +39,7 @@ HR_COL = "HR(%)"
 IMPROV_COL = "Improv."
 EFF_COL = "Eff."
 RL_COL = "RL"
+ORDER_COL = "Order"
 GROUP_SPEC_HR = "Spec. HR"
 GROUP_SR_HR = "Spec.+Reac. HR"
 GROUP_SR_EFF = "Spec. Eff."
@@ -131,7 +132,7 @@ def render_hit_rate_table(
         rf"\label{{{label}}}",
         r"\begin{tabular}{llccc}",
         r"\toprule",
-        r"Algorithm & Flow Order & Aging Factor & Hit Rate (\%) & Difference with Reactive \\",
+        r"Algorithm & Order & Aging Factor & Hit Rate (\%) & Difference with Reactive \\",
         r"\midrule",
     ]
     for row in rows:
@@ -160,7 +161,7 @@ def render_efficiency_table(caption: str, label: str, rows: list[dict]) -> str:
         rf"\label{{{label}}}",
         r"\begin{tabular}{llcc}",
         r"\toprule",
-        r"Algorithm & Flow Order & Aging Factor & Speculation Efficiency \\",
+        r"Algorithm & Order & Aging Factor & Speculation Efficiency \\",
         r"\midrule",
     ]
     for row in rows:
@@ -234,7 +235,7 @@ def render_combined_ieee_table(
         r"\textbf{(a) Speculative Hit Rate}\\[0.4em]",
         r"\begin{tabular}{@{}llccc@{}}",
         r"\toprule",
-        r"Algorithm & Flow Order & Aging Factor & Hit Rate (\%) & $\Delta$ Reactive \\",
+        r"Algorithm & Order & Aging Factor & Hit Rate (\%) & $\Delta$ Reactive \\",
         r"\midrule",
         *_hit_rate_rows_latex(speculative_rows, reactive_hr),
         r"\bottomrule",
@@ -244,7 +245,7 @@ def render_combined_ieee_table(
         r"\textbf{(b) Speculative+Reactive Hit Rate}\\[0.4em]",
         r"\begin{tabular}{@{}llccc@{}}",
         r"\toprule",
-        r"Algorithm & Flow Order & Aging Factor & Hit Rate (\%) & $\Delta$ Reactive \\",
+        r"Algorithm & Order & Aging Factor & Hit Rate (\%) & $\Delta$ Reactive \\",
         r"\midrule",
         *_hit_rate_rows_latex(speculativereactive_rows, reactive_hr),
         r"\bottomrule",
@@ -254,7 +255,7 @@ def render_combined_ieee_table(
         r"\textbf{(c) Speculative+Reactive Speculation Efficiency}\\[0.4em]",
         r"\begin{tabular}{@{}llcc@{}}",
         r"\toprule",
-        r"Algorithm & Flow Order & Aging Factor & Speculation Efficiency \\",
+        r"Algorithm & Order & Aging Factor & Speculation Efficiency \\",
         r"\midrule",
         *_efficiency_rows_latex(efficiency_rows),
         r"\bottomrule",
@@ -313,7 +314,7 @@ def build_unified_table_data(
 
     headers = [
         RL_COL,
-        "Flow Order",
+        ORDER_COL,
         AF_COL,
         HR_COL,
         IMPROV_COL,
@@ -367,6 +368,36 @@ def _pdf_display_data_with_merged_algorithm(data: list[list[str]]) -> list[list[
 
 
 UNIFIED_GROUP_HEADERS = list(UNIFIED_GROUP_LABELS)
+
+UNIFIED_CHAR_WIDTH_IN = 0.068
+UNIFIED_COL_PAD_IN = 0.035
+UNIFIED_FIG_MARGIN_IN = 0.28
+
+
+def _unified_column_width_inches(header: str, values: list[str]) -> float:
+    texts = [header, *[v for v in values if v]]
+    max_len = max(len(t) for t in texts)
+    width = max_len * UNIFIED_CHAR_WIDTH_IN + UNIFIED_COL_PAD_IN
+    if header == HR_COL:
+        width = max(width, 0.43)
+    return width
+
+
+def _unified_col_widths_normalized(headers: list[str], data: list[list[str]]) -> list[float]:
+    inches = [
+        _unified_column_width_inches(header, [row[col] for row in data])
+        for col, header in enumerate(headers)
+    ]
+    total = sum(inches)
+    return [w / total for w in inches]
+
+
+def _unified_figure_width(headers: list[str], data: list[list[str]]) -> float:
+    inches = [
+        _unified_column_width_inches(header, [row[col] for row in data])
+        for col, header in enumerate(headers)
+    ]
+    return sum(inches) + UNIFIED_FIG_MARGIN_IN
 
 
 def _pdf_group_header_row(n_cols: int) -> list[str]:
@@ -467,7 +498,7 @@ def render_unified_latex_table(
         r"\toprule",
         rf"& & \multicolumn{{3}}{{c}}{{{GROUP_SPEC_HR}}} & \multicolumn{{3}}{{c}}{{{GROUP_SR_HR}}} & \multicolumn{{2}}{{c}}{{{GROUP_SR_EFF}}} \\",
         r"\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-10}",
-        rf"{RL_COL} & Flow Order & {AF_COL} & HR(\%) & Improv. & {AF_COL} & HR(\%) & Improv. & {AF_COL} & Eff. \\",
+        rf"{RL_COL} & {ORDER_COL} & {AF_COL} & HR(\%) & Improv. & {AF_COL} & HR(\%) & Improv. & {AF_COL} & Eff. \\",
         r"\midrule",
         *_latex_unified_rows(data),
         r"\bottomrule",
@@ -488,14 +519,14 @@ def render_unified_pdf(path: Path, headers: list[str], data: list[list[str]], re
     })
 
     # --- layout constants ---
-    col_widths = [0.125, 0.115, 0.085, 0.095, 0.080, 0.085, 0.095, 0.080, 0.085, 0.095]
+    col_widths = _unified_col_widths_normalized(headers, data)
     row_group_h = 0.140
     row_head_h  = 0.150
     row_data_h  = 0.210
     n_data = len(data)    # 9
     total_h = row_group_h + row_head_h + n_data * row_data_h
     fig_h = total_h / 0.72  # leave margins
-    fig_w = 11.0
+    fig_w = _unified_figure_width(headers, data)
 
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
     ax = fig.add_axes([0.01, 0.01, 0.98, 0.98])
@@ -638,7 +669,7 @@ def render_unified_pdf(path: Path, headers: list[str], data: list[list[str]], re
 def _hit_rate_table_data(rows: list[dict], reactive_hr: float) -> tuple[list[str], list[list[str]]]:
     headers = [
         "RL",
-        "Flow Order",
+        ORDER_COL,
         "Aging Factor",
         "Hit Rate (%)",
         "Δ Reactive",
@@ -659,7 +690,7 @@ def _hit_rate_table_data(rows: list[dict], reactive_hr: float) -> tuple[list[str
 
 
 def _efficiency_table_data(rows: list[dict]) -> tuple[list[str], list[list[str]]]:
-    headers = ["RL", "Flow Order", "Aging Factor", "Speculation Efficiency"]
+    headers = ["RL", ORDER_COL, "Aging Factor", "Speculation Efficiency"]
     data = [
         [
             ALGORITHM_LABELS[row["algorithm"]],

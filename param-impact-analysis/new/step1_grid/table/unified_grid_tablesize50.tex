@@ -1,0 +1,24 @@
+% Requires: \usepackage{booktabs,multirow}
+\begin{table*}[t]
+\centering
+\caption{Best grid-search metrics per algorithm and flow ordering (SFT size = 50). Reactive baseline hit rate: 67.87\%. Spec.=Speculative, S+R=Speculative+Reactive. AF=Aging Factor, Eff.=Speculation Efficiency. Improvement columns report hit-rate gain over reactive (\%). Each row uses the best hyperparameter configuration from the grid search.}
+\label{tab:unified-grid-metrics-tablesize50}
+\small
+\begin{tabular}{@{}llcccccccc@{}}
+\toprule
+& & \multicolumn{3}{c}{Spec. HR} & \multicolumn{3}{c}{Spec.+Reac. HR} & \multicolumn{2}{c}{Spec. Eff.} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-10}
+RL & Order & AF & HR(\%) & Improv. & AF & HR(\%) & Improv. & AF & Eff. \\
+\midrule
+\multirow{3}{*}{Bandit} & Src & 0.999 & 49.42 & -18.45 & 0.993 & 69.35 & +1.48 & 0.993 & 11.82 \\
+Dest & 0.999 & 48.42 & -19.45 & 0.993 & 69.10 & +1.23 & 0.997 & 11.77 \\
+Trace & 0.997 & 50.28 & -17.59 & 0.9 & 80.82 & +12.95 & 0.993 & 11.55 \\
+\multirow{3}{*}{PPO} & Src & 0.999 & 20.40 & -47.47 & 0.993 & 68.67 & +0.80 & 0.997 & 10.73 \\
+Dest & 0.997 & 29.18 & -38.69 & 0.993 & 68.86 & +0.99 & 0.997 & 10.55 \\
+Trace & 0.997 & 31.05 & -36.82 & 0.9 & 75.03 & +7.16 & 0.995 & 7.62 \\
+\multirow{3}{*}{DQN} & Src & 0.999 & 20.73 & -47.14 & 0.993 & 68.55 & +0.68 & 0.997 & 11.97 \\
+Dest & 0.999 & 29.44 & -38.43 & 0.993 & 68.74 & +0.87 & 0.993 & 9.80 \\
+Trace & 0.999 & 31.42 & -36.45 & 0.95 & 74.70 & +6.83 & 0.991 & 7.21 \\
+\bottomrule
+\end{tabular}
+\end{table*}

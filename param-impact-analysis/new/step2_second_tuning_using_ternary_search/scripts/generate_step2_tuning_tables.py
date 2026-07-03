@@ -21,6 +21,7 @@ from generate_grid_tablesize50_tables import (  # noqa: E402
 )
 from generate_tablesize50_latex_tables import (  # noqa: E402
     IMPROV_COL,
+    ORDER_COL,
     format_diff,
     format_efficiency,
     format_hit_rate,
@@ -68,20 +69,38 @@ GRID_IMPROV_COL = "Grid Improv."
 GROUP_SPEC_HR = "Spec. HR"
 GROUP_SR_HR = "Spec.+Reac. HR"
 GROUP_SR_EFF = "Spec. Eff."
+EXACT_DISPLAY_PARAMS = {"rewardAgingFactor", "spatialReward", "gamma", "bandit_c"}
 
 
-def format_param(key: str, value: float | int) -> str:
-    if key in {"rewardAgingFactor", "spatialReward", "gamma"}:
-        return f"{float(value):.2f}"
+def load_history_last_row(run_id: int) -> dict[str, str]:
+    path = RESULTS_DIR / str(run_id) / "best_objective_history.csv"
+    with open(path, newline="") as f:
+        rows = list(csv.DictReader(f))
+    if not rows:
+        raise ValueError(f"Empty history: {path}")
+    return rows[-1]
+
+
+def history_params(last_row: dict[str, str]) -> dict[str, str]:
+    params: dict[str, str] = {}
+    for key, value in last_row.items():
+        if key.startswith("value_"):
+            params[key[len("value_"):]] = value
+    return params
+
+
+def format_param(key: str, value: str | float | int) -> str:
+    if key in EXACT_DISPLAY_PARAMS:
+        return str(value)
+    numeric = float(value)
     if key == "ppo_lr":
-        v = float(value)
-        if v < 0.01:
-            return f"{v:.4f}".rstrip("0").rstrip(".")
-        return f"{v:g}"
+        if numeric < 0.01:
+            return f"{numeric:.4f}".rstrip("0").rstrip(".")
+        return f"{numeric:g}"
     if key == "dqn_lr":
-        return f"{float(value):.2f}"
-    if isinstance(value, float):
-        return f"{value:g}"
+        return f"{numeric:.2f}"
+    if isinstance(value, float) or "." in str(value):
+        return f"{numeric:g}"
     return str(value)
 
 
@@ -92,14 +111,13 @@ def load_results() -> dict[tuple[str, str, str], dict]:
 
     results: dict[tuple[str, str, str], dict] = {}
     for run_id, cmd in commands.items():
-        checkpoint_path = RESULTS_DIR / str(run_id) / "checkpoint.json"
-        with open(checkpoint_path) as f:
-            state = json.load(f)
+        last_row = load_history_last_row(run_id)
+        params = history_params(last_row)
         key = (cmd["algorithm"], cmd["ordering"], cmd["objective"])
         grid_obj = float(cmd["current_value"])
-        final_obj = float(state["current_objective"])
+        final_obj = float(last_row["best_objective"])
         results[key] = {
-            "params": {name: info["value"] for name, info in state["params"].items()},
+            "params": params,
             "grid_obj": grid_obj,
             "final_obj": final_obj,
             "delta": final_obj - grid_obj,
@@ -137,7 +155,7 @@ def build_algo_table_data(
     param_headers = [PARAM_LABELS[key] for key in ALGO_PARAM_KEYS[algorithm]]
     n_params = len(param_headers)
 
-    headers = ["Flow Order"]
+    headers = [ORDER_COL]
     headers.extend(param_headers)
     headers.extend([HR_COL, IMPROV_COL, GRID_IMPROV_COL])
     headers.extend(param_headers)

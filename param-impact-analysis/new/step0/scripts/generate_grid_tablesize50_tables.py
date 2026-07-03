@@ -21,6 +21,7 @@ from generate_tablesize50_latex_tables import (  # noqa: E402
     ALGORITHMS,
     ALGORITHM_LABELS,
     ORDERINGS,
+    ORDER_COL,
     TABLESIZE,
     build_unified_table_data,
     format_diff,
@@ -117,8 +118,8 @@ def _column_width_inches(header: str, values: list[str]) -> float:
     texts = [_plain_text(t) for t in [header, *values]]
     max_len = max(len(t) for t in texts)
 
-    if header in {"Flow Order", RL_COL}:
-        return max(max_len * CHAR_WIDTH_IN + COL_PAD_IN, 0.52 if header == "Flow Order" else 0.48)
+    if header in {ORDER_COL, RL_COL}:
+        return max(max_len * CHAR_WIDTH_IN + COL_PAD_IN, 0.44 if header == ORDER_COL else 0.48)
     if header == IMPROV_COL:
         return max(max_len * CHAR_WIDTH_IN + COL_PAD_IN, 0.58)
     if header in {HR_COL, EFF_COL}:
@@ -226,7 +227,7 @@ def build_algo_table_data(
     param_keys = ALGO_PARAM_KEYS[algorithm]
     param_headers = [PARAM_LABELS[k] for k in param_keys]
 
-    headers = ["Flow Order"]
+    headers = [ORDER_COL]
     headers.extend(param_headers)
     headers.extend([HR_COL, IMPROV_COL])
     headers.extend(param_headers)
@@ -511,7 +512,7 @@ def build_combined_table_data(
     reactive_hr: float,
 ) -> tuple[list[str], list[list[str]]]:
     param_headers = [label for _, label in COMBINED_PARAM_COLS]
-    headers = [RL_COL, "Flow Order"]
+    headers = [RL_COL, ORDER_COL]
     headers.extend(param_headers)
     headers.extend([HR_COL, IMPROV_COL])
     headers.extend(param_headers)
@@ -667,7 +668,7 @@ def render_unified_grid_latex_table(
         r"\toprule",
         rf"& & \multicolumn{{3}}{{c}}{{{GROUP_SPEC_HR}}} & \multicolumn{{3}}{{c}}{{{GROUP_SR_HR}}} & \multicolumn{{2}}{{c}}{{{GROUP_SR_EFF}}} \\",
         r"\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-10}",
-        rf"{RL_COL} & Flow Order & AF & HR(\%) & Improv. & AF & HR(\%) & Improv. & AF & Eff. \\",
+        rf"{RL_COL} & {ORDER_COL} & AF & HR(\%) & Improv. & AF & HR(\%) & Improv. & AF & Eff. \\",
         r"\midrule",
         *_latex_unified_rows(data),
         r"\bottomrule",

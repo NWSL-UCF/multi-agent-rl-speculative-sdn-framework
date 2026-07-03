@@ -15,6 +15,7 @@ import pandas as pd
 STEP2_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = STEP2_DIR.parents[2]
 RESULTS_DIR = REPO_ROOT / "results" / "step2_second_tuning"
+STEP1_GRID_ROOT = REPO_ROOT / "results" / "step1_grid_search"
 COMMANDS_CSV = STEP2_DIR / "commands.csv"
 PLOTS_DIR = STEP2_DIR / "plots"
 PLOT_DATA_DIR = PLOTS_DIR / "speculation_efficiency_vs_time_grid_data"
@@ -24,7 +25,8 @@ MATCH_TOLERANCE = 0.05
 sys.path.insert(0, str(STEP2_DIR / "scripts"))
 from generate_step2_tuning_tables import load_results  # noqa: E402
 
-EWMA_ALPHA = 0.05
+EWMA_ALPHA = 0.02
+Y_TICKS = list(range(0, 26, 5))
 LINE_WIDTH = 1.2
 AVG_LINE_WIDTH = 0.7
 AVG_DASH_PATTERN = (0, (8, 2))
@@ -87,83 +89,122 @@ def run_id_for(commands: list[dict], *, algorithm: str, ordering: str) -> int:
     raise KeyError(f"No run for {algorithm}/{ordering}/{OBJECTIVE}")
 
 
+OBJECTIVE_MODE = {
+    OBJECTIVE: "speculativereactive",
+}
+
+STEP1_PARAM_ORDER: dict[str, list[str]] = {
+    "bandit": ["bandit_c", "rewardAgingFactor", "spatialReward"],
+    "dqn": [
+        "numberofFlowsPerAgent",
+        "gamma",
+        "dqn_lr",
+        "rewardAgingFactor",
+        "spatialReward",
+        "hidden_layers",
+    ],
+    "ppo": [
+        "gamma",
+        "ppo_lr",
+        "rewardAgingFactor",
+        "spatialReward",
+        "hidden_layers",
+        "ppo_epochs",
+    ],
+}
+
+
+def fmt_step1_num(value: float | int) -> str:
+    value = float(value)
+    if abs(value - round(value)) < 1e-9:
+        return str(int(round(value)))
+    return f"{value:g}"
+
+
+def load_history(run_id: int) -> pd.DataFrame:
+    history_path = RESULTS_DIR / str(run_id) / "best_objective_history.csv"
+    history = pd.read_csv(history_path)
+    if history.empty:
+        raise ValueError(f"Empty history: {history_path}")
+    return history
+
+
+def last_history_row(run_id: int) -> pd.Series:
+    return load_history(run_id).iloc[-1]
+
+
+def history_all_center(history: pd.DataFrame) -> bool:
+    return bool((history["decision"] == "center").all())
+
+
+def last_committed_row(history: pd.DataFrame) -> tuple[pd.Series, int]:
+    for idx in range(len(history) - 1, -1, -1):
+        row = history.iloc[idx]
+        if str(row["decision"]) in {"mid_left", "mid_right"}:
+            return row, idx
+    raise ValueError("No committed mid_left/mid_right decision in history")
+
+
+def committed_aggregated_csv(run_id: int, row: pd.Series) -> Path:
+    decision = str(row["decision"])
+    return (
+        RESULTS_DIR
+        / str(run_id)
+        / "aggregated"
+        / f"{row['param_name']}_iter{int(row['param_iter'])}_{decision}.csv"
+    )
+
+
+def step1_params(cmd: dict, last: pd.Series) -> dict[str, float | int]:
+    params = {
+        str(col).replace("value_", ""): float(last[col])
+        for col in last.index
+        if str(col).startswith("value_")
+    }
+    algorithm = cmd["algorithm"]
+    for key in STEP1_PARAM_ORDER[algorithm]:
+        raw = cmd.get(key, "")
+        if raw == "":
+            continue
+        params[key] = float(raw) if "." in str(raw) else int(raw)
+    return params
+
+
+def step1_ordering_lti_path(cmd: dict, last: pd.Series) -> Path:
+    algorithm = cmd["algorithm"]
+    objective = cmd["objective"]
+    params = step1_params(cmd, last)
+    parts = [
+        STEP1_GRID_ROOT / algorithm,
+        f"mode_{OBJECTIVE_MODE[objective]}",
+        f"objective_{objective}",
+    ]
+    for key in STEP1_PARAM_ORDER[algorithm]:
+        parts.append(f"{key}_{fmt_step1_num(params[key])}")
+    parts.append(f"ordering_{cmd['ordering']}")
+    return Path(*parts) / "lti_metrics.csv"
+
+
 def mean_aggregated_metric(path: Path, column: str = "speculation_efficiency") -> float:
     return float(pd.read_csv(path)[column].mean())
 
 
-def iter6_candidates(run_id: int) -> tuple[pd.Series, list[Path]]:
-    history_path = RESULTS_DIR / str(run_id) / "best_objective_history.csv"
-    history = pd.read_csv(history_path)
-    if history.empty:
-        raise ValueError(f"Empty history: {history_path}")
+def resolve_efficiency_csv(
+    run_id: int, cmd: dict
+) -> tuple[Path, str, float, pd.Series, pd.Series | None]:
+    history = load_history(run_id)
     last = history.iloc[-1]
-    param_name = str(last["param_name"])
-    decision = str(last["decision"])
-    agg_dir = RESULTS_DIR / str(run_id) / "aggregated"
+    if history_all_center(history):
+        source = step1_ordering_lti_path(cmd, last)
+        if not source.exists():
+            raise FileNotFoundError(f"Missing step1 aggregated LTI for run {run_id}: {source}")
+        return source, "step1_all_center", mean_aggregated_metric(source), last, None
 
-    if decision in {"mid_left", "mid_right"}:
-        paths = [agg_dir / f"{param_name}_iter6_{decision}.csv"]
-    else:
-        target = float(last["best_objective"])
-        paths: list[Path] = []
-        mid_left = agg_dir / f"{param_name}_iter6_mid_left.csv"
-        mid_right = agg_dir / f"{param_name}_iter6_mid_right.csv"
-        if mid_left.exists() and abs(float(last["obj_mid_left"]) - target) < 1e-6:
-            paths.append(mid_left)
-        if mid_right.exists() and abs(float(last["obj_mid_right"]) - target) < 1e-6:
-            paths.append(mid_right)
-        if not paths:
-            if mid_left.exists():
-                paths.append(mid_left)
-            if mid_right.exists():
-                paths.append(mid_right)
-    existing = [path for path in paths if path.exists()]
-    if not existing:
-        raise FileNotFoundError(
-            f"No iter6 aggregated CSV for run {run_id} "
-            f"(param={param_name}, decision={decision})"
-        )
-    return last, existing
-
-
-def last_history_row(run_id: int) -> pd.Series:
-    history_path = RESULTS_DIR / str(run_id) / "best_objective_history.csv"
-    history = pd.read_csv(history_path)
-    if history.empty:
-        raise ValueError(f"Empty history: {history_path}")
-    return history.iloc[-1]
-
-
-def resolve_aggregated_csv(run_id: int, table_value: float) -> tuple[Path, str, float]:
-    agg_dir = RESULTS_DIR / str(run_id) / "aggregated"
-    try:
-        last, candidates = iter6_candidates(run_id)
-        target = float(last["best_objective"])
-        best_path = min(
-            candidates,
-            key=lambda path: abs(mean_aggregated_metric(path) - target),
-        )
-        best_mean = mean_aggregated_metric(best_path)
-        method = "iter6"
-    except FileNotFoundError:
-        best_path = min(
-            agg_dir.glob("*.csv"),
-            key=lambda path: abs(mean_aggregated_metric(path) - table_value),
-        )
-        best_mean = mean_aggregated_metric(best_path)
-        method = "fallback"
-
-    if abs(best_mean - table_value) > MATCH_TOLERANCE:
-        fallback = min(
-            agg_dir.glob("*.csv"),
-            key=lambda path: abs(mean_aggregated_metric(path) - table_value),
-        )
-        fallback_mean = mean_aggregated_metric(fallback)
-        if abs(fallback_mean - table_value) < abs(best_mean - table_value):
-            best_path = fallback
-            best_mean = fallback_mean
-            method = "fallback"
-    return best_path, method, best_mean
+    committed, _ = last_committed_row(history)
+    source = committed_aggregated_csv(run_id, committed)
+    if not source.exists():
+        raise FileNotFoundError(f"Missing committed aggregated CSV for run {run_id}: {source}")
+    return source, "history_walk", mean_aggregated_metric(source), last, committed
 
 
 def ewma(series: pd.Series, alpha: float = EWMA_ALPHA) -> pd.Series:
@@ -172,9 +213,10 @@ def ewma(series: pd.Series, alpha: float = EWMA_ALPHA) -> pd.Series:
 
 def load_efficiency_series(csv_path: Path) -> pd.DataFrame:
     df = pd.read_csv(csv_path)
+    time_col = "second_bucket" if "second_bucket" in df.columns else "lti_start_time"
     return pd.DataFrame(
         {
-            "time": df["second_bucket"].astype(float),
+            "time": df[time_col].astype(float),
             "efficiency": ewma(df["speculation_efficiency"].astype(float)),
         }
     )
@@ -214,6 +256,27 @@ def add_rl_avg_labels(
                 transform=ax.transAxes,
                 va="center",
                 ha=ha,
+                fontsize=8,
+                color=color,
+                clip_on=False,
+                zorder=5,
+            )
+        return
+
+    if position == "top_left":
+        x_text = 0.03
+        y_base = 0.92
+        for idx, (algorithm, avg) in enumerate(averages):
+            y = y_base - idx * line_step
+            color = RL_COLORS[algorithm]
+            label = ALGORITHM_LABELS[algorithm]
+            ax.text(
+                x_text,
+                y,
+                f"{label}: {avg:.2f}",
+                transform=ax.transAxes,
+                va="center",
+                ha="left",
                 fontsize=8,
                 color=color,
                 clip_on=False,
@@ -266,47 +329,60 @@ def prepare_plot_data(commands: list[dict], results: dict) -> list[dict]:
     else:
         PLOT_DATA_DIR.mkdir(parents=True)
 
+    commands_by_run = {int(row["run_id"]): row for row in commands}
     manifest: list[dict] = []
     for ordering in ORDERINGS:
         for algorithm in ALGORITHMS:
             run_id = run_id_for(commands, algorithm=algorithm, ordering=ordering)
             table_value = results[(algorithm, ordering, OBJECTIVE)]["final_obj"]
-            source, method, csv_mean = resolve_aggregated_csv(run_id, table_value)
+            cmd = commands_by_run[run_id]
+            source, method, csv_mean, last, committed = resolve_efficiency_csv(run_id, cmd)
             dest = PLOT_DATA_DIR / f"run{run_id:02d}_{algorithm}_{ordering}.csv"
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, dest)
-            last = last_history_row(run_id)
-            manifest.append(
-                {
-                    "run_id": run_id,
-                    "algorithm": algorithm,
-                    "ordering": ordering,
-                    "table_eff": table_value,
-                    "csv_mean": csv_mean,
-                    "source": str(source),
-                    "source_name": source.name,
-                    "dest": str(dest),
-                    "method": method,
-                    "last_param": str(last["param_name"]),
-                    "last_decision": str(last["decision"]),
-                }
-            )
+            entry = {
+                "run_id": run_id,
+                "algorithm": algorithm,
+                "ordering": ordering,
+                "table_eff": table_value,
+                "last_best_objective": float(last["best_objective"]),
+                "csv_mean": csv_mean,
+                "source": str(source),
+                "source_name": source.name,
+                "dest": str(dest),
+                "method": method,
+                "last_param": str(last["param_name"]),
+                "last_decision": str(last["decision"]),
+                "last_param_iter": int(last["param_iter"]),
+            }
+            if committed is not None:
+                entry.update(
+                    {
+                        "committed_param": str(committed["param_name"]),
+                        "committed_decision": str(committed["decision"]),
+                        "committed_param_iter": int(committed["param_iter"]),
+                    }
+                )
+            manifest.append(entry)
 
     (PLOT_DATA_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2))
     return manifest
 
 
-def verify_table_vs_csv(manifest: list[dict]) -> None:
-    print("\nVerification: table Spec. Eff. vs mean(speculation_efficiency) from selected CSV")
-    print(f"  {'run':>3} {'algo':>6} {'ord':>4} {'table':>7} {'csv':>7} {'diff':>7} method  file")
+def verify_last_best_objective(manifest: list[dict]) -> None:
+    print("\nVerification: mean(LTI speculation_efficiency) vs last-row best_objective")
+    print(
+        f"  {'run':>3} {'algo':>6} {'ord':>4} {'last_best':>9} {'csv':>7} "
+        f"{'diff':>7} method  file"
+    )
     ok = 0
     for entry in manifest:
-        diff = entry["table_eff"] - entry["csv_mean"]
+        diff = entry["csv_mean"] - entry["last_best_objective"]
         match = abs(diff) <= MATCH_TOLERANCE
         ok += int(match)
         print(
             f"  {entry['run_id']:>3} {entry['algorithm']:>6} {entry['ordering']:>4} "
-            f"{entry['table_eff']:>7.2f} {entry['csv_mean']:>7.2f} {diff:>+7.2f} "
+            f"{entry['last_best_objective']:>9.2f} {entry['csv_mean']:>7.2f} {diff:>+7.2f} "
             f"{entry['method']:>7}  {entry['source_name']}"
         )
     print(f"  Matches within {MATCH_TOLERANCE:.2f}: {ok}/{len(manifest)}")
@@ -336,10 +412,13 @@ def plot_grid(commands: list[dict], results: dict) -> Path:
             plot_avg_line(ax, table_avg, color)
             averages.append((algorithm, table_avg))
 
-        legend_position = "top_center" if col_idx < 2 else "bottom_right"
-        add_rl_avg_labels(ax, averages, position=legend_position)
+        add_rl_avg_labels(ax, averages, position="top_left")
         ax.set_title(ORDERING_LABELS[ordering], pad=2)
         style_axes(ax, show_ylabel=col_idx == 0)
+
+    for ax in axes:
+        ax.set_ylim(0, 25)
+        ax.set_yticks(Y_TICKS)
 
     fig.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.95, wspace=0.12)
 
@@ -356,9 +435,14 @@ def main() -> None:
     results = load_results()
     manifest = prepare_plot_data(commands, results)
     out_base = plot_grid(commands, results)
-    verify_table_vs_csv(manifest)
+    verify_last_best_objective(manifest)
     print(f"\nWrote {out_base}.pdf/.png")
     print(f"Copied aggregated selections to {PLOT_DATA_DIR}/")
+    print(f"Run mapping: {COMMANDS_CSV}")
+    print(
+        "Selection rule: all-center history -> step1 ordering lti_metrics.csv; "
+        "else walk history backward to last mid_left/mid_right aggregated CSV"
+    )
     print(f"EWMA alpha: {EWMA_ALPHA}")
 
 
