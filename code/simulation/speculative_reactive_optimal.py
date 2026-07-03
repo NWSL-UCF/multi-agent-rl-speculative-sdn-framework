@@ -10,6 +10,27 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
         self.total_proactive_removals = 0
         self.total_speculative_installs = 0
         self.lti_maintenance_counter = 0
+        self.current_time = 0.0
+        self.lti_start_time = 0.0
+        self.last_metrics_time = 0.0
+        self.metrics_interval = 1.0
+
+    def _handle_packet_hit(self, packet_data, packet_time):
+        """Handle a packet hit and refresh oracle timing for the flow."""
+        packet_source = packet_data["Source"]
+        packet_dest = packet_data["Destination"]
+        flow_key = (packet_source, packet_dest)
+
+        matches = (self.controller_table["Source"] == packet_source) & (
+            self.controller_table["Destination"] == packet_dest
+        )
+        if matches.any():
+            match_idx = matches.idxmax()
+            self.controller_table.loc[match_idx, "hit_count"] += 1
+            self.controller_table.loc[match_idx, "was_hit_this_iteration"] = 1
+            self.controller_table.loc[match_idx, "total_packet_count"] += 1
+
+        self._update_flow_next_packet_time(flow_key, packet_time)
 
     def _add_flow_to_table(self, flow_data, is_speculative=False):
         """Add a new flow to the switch table"""
@@ -27,10 +48,6 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
             subset=['Source', 'Destination'], keep='last'
         )
 
-        if not is_speculative and flow_key in self.controller_table.index:
-            self.controller_table.loc[flow_key, 'miss_count'] += 1
-            self.controller_table.loc[flow_key, 'total_packet_count'] += 1
-
     def _check_packet_match(self, flow_key):
         """Check if packet matches a flow in the switch table"""
         source, destination = flow_key
@@ -44,24 +61,36 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
         is_speculative = bool(matches.iloc[-1]['is_speculative'])
         return True, not is_speculative
 
-    def _handle_packet_miss(self, packet_data, packet_time):
-        """Handle a packet miss with reactive optimal flow management"""
-        flow_key = (packet_data['Source'], packet_data['Destination'])
+    def _handle_packet_miss(self, packet_data, value):
+        """Handle a packet miss by queueing a reactive install after RTI delay."""
+        packet_source = packet_data['Source']
+        packet_dest = packet_data['Destination']
 
-        if len(self.switch_table) >= self.table_size:
-            flow_to_evict = self._find_flow_to_evict()
-            if flow_to_evict:
-                self._evict_flow(flow_to_evict)
-                if flow_to_evict in self.flow_next_packet_time:
-                    del self.flow_next_packet_time[flow_to_evict]
+        matches = (self.controller_table['Source'] == packet_source) & (
+            self.controller_table['Destination'] == packet_dest
+        )
+        if matches.any():
+            match_idx = matches.idxmax()
+            self.controller_table.loc[match_idx, 'miss_count'] += 1
+            self.controller_table.loc[match_idx, 'total_packet_count'] += 1
 
-        self._add_flow_to_table(packet_data, is_speculative=False)
+            packet_df = pd.DataFrame({
+                'Source': [packet_source],
+                'Destination': [packet_dest],
+            })
+            self._add_to_installation_queue(packet_df, value)
 
-        self._update_flow_next_packet_time(flow_key, packet_time)
-        self.flow_last_packet_time[flow_key] = packet_time
-        self.flow_packet_count[flow_key] += 1
+    def _process_flow_queue(self, value):
+        """Process RTI-delayed reactive installs with oracle eviction."""
+        self._current_packet_time = float(value.iloc[self.packet_counter].iloc[0])
+        super()._process_flow_queue(value)
 
-        self.data_collector.record_flow_installation(packet_data, is_speculative=False)
+    def _install_flow_from_queue(self, flow_entry):
+        """Install a queued reactive flow using oracle eviction."""
+        if self._evict_flow_if_needed(flow_entry):
+            self._create_and_install_flow(flow_entry)
+            flow_key = (flow_entry.iloc[0]['Source'], flow_entry.iloc[0]['Destination'])
+            self._update_flow_next_packet_time(flow_key, self._current_packet_time)
 
     def _process_single_packet(self, dataset, value):
         """Process a single packet with reactive optimal and speculative hit tracking"""
@@ -72,6 +101,9 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
         }
         packet_time = float(value.iloc[self.packet_counter].iloc[0])
         self.current_time = packet_time
+        self._current_packet_time = packet_time
+
+        self._process_flow_queue(value)
 
         flow_key = (packet_data['Source'], packet_data['Destination'])
         hit, is_reactive_hit = self._check_packet_match(flow_key)
@@ -82,7 +114,7 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
                 packet_time, True, is_speculative=True, is_reactive_hit=is_reactive_hit
             )
         else:
-            self._handle_packet_miss(packet_data, packet_time)
+            self._handle_packet_miss(packet_data, value)
             self.data_collector.record_packet_processing(packet_time, False, is_speculative=True)
 
         self.packet_counter += 1
@@ -102,8 +134,6 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
 
         for flow_key in flows_to_remove:
             self._evict_flow(flow_key)
-            if flow_key in self.flow_next_packet_time:
-                del self.flow_next_packet_time[flow_key]
 
         self.total_proactive_removals += len(flows_to_remove)
         return len(flows_to_remove)
@@ -177,6 +207,9 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
         if self.packet_counter == 0:
             return float(value.iloc[0].iloc[0])
         return float(value.iloc[self.packet_counter - 1].iloc[0])
+
+    def _collect_lti_metrics(self, lti_start_time, lti_end_time):
+        self.data_collector.record_lti_metrics(lti_start_time, lti_end_time, self.switch_table)
 
     def run(self, dataset, value):
         """Main simulation loop for speculative reactive optimal mode"""
