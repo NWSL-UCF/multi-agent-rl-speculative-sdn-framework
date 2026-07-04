@@ -1,0 +1,18 @@
+{
+  "total_packets": 1386,
+  "total_hits": 1269,
+  "total_misses": 117,
+  "total_speculative_flows": 49,
+  "total_reactive_flows": 107,
+  "overall_hit_rate": 91.55844155844156,
+  "average_hitrate_per_lti": 91.18189820267825,
+  "overall_miss_rate": 8.441558441558442,
+  "overall_speculation_efficiency": 6.1322935567093335,
+  "average_speculation_efficiency_per_lti": 1.1362864441727063,
+  "simulation_duration_seconds": 200.890939,
+  "total_run_time": "00:03:20",
+  "wall_clock_time_seconds": 10.937393426895142,
+  "wall_clock_time": "00:00:10",
+  "total_lti_intervals": 170,
+  "timestamp": "2026-07-03T17:41:47.305029"
+}
