@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import json
+import numpy as np
 from datetime import datetime
 
 from util.environment import save_environment_json
@@ -56,6 +57,15 @@ class DataCollector:
         
         # Flow table tracking
         self.switch_table = pd.DataFrame()
+
+        # Per-packet metrics (optional)
+        self.enable_per_packet_logging = bool(
+            getattr(args, "enable_per_packet_logging", False)
+        )
+        self.switch_processing_rate = float(
+            getattr(args, "switch_processing_rate", 200_000_000)
+        )
+        self.per_packet_metrics_data = []
         
     def set_switch_table(self, switch_table):
         """Update the current switch table for LTI metrics"""
@@ -67,10 +77,19 @@ class DataCollector:
     
     def record_packet_processing(self, packet_time, was_hit, is_speculative=False, is_reactive_hit=False):
         """Record packet processing results"""
+        packet_id = self.total_packets
         self.total_packets += 1
         self.lti_packets += 1
         self.current_time = packet_time
-        
+
+        if self.enable_per_packet_logging:
+            self._record_per_packet_metric(
+                packet_id=packet_id,
+                arrival_time=packet_time,
+                was_hit=was_hit,
+                is_reactive_hit=is_reactive_hit,
+            )
+
         if was_hit:
             self.total_hits += 1
             self.lti_hits += 1
@@ -86,6 +105,31 @@ class DataCollector:
         if packet_time - self.last_metrics_time >= self.metrics_interval:
             self._collect_metrics(packet_time, is_speculative)
             self.last_metrics_time = packet_time
+
+    def _record_per_packet_metric(self, packet_id, arrival_time, was_hit, is_reactive_hit):
+        """Record per-packet delay metrics when logging is enabled."""
+        switch_mean = 1.0 / self.switch_processing_rate
+        switch_processing_time = float(np.random.exponential(switch_mean))
+
+        if was_hit:
+            control_plane_delay = 0.0
+        else:
+            control_plane_delay = float(np.random.exponential(float(self.args.RTI)))
+
+        total_delay = switch_processing_time + control_plane_delay
+        is_hit = 1 if was_hit else 0
+        # 0 when the packet matched a speculative flow, 1 otherwise.
+        is_speculative_match = 0 if (was_hit and not is_reactive_hit) else 1
+
+        self.per_packet_metrics_data.append({
+            "id": packet_id,
+            "arrival_time": arrival_time,
+            "switch_processing_time": switch_processing_time,
+            "control_plane_delay": control_plane_delay,
+            "total_delay": total_delay,
+            "is_hit": is_hit,
+            "is_speculative": is_speculative_match,
+        })
     
     def record_flow_installation(self, flow_data, is_speculative=False):
         """Record flow installation"""
@@ -246,6 +290,16 @@ class DataCollector:
             lti_metrics_df.to_csv(os.path.join(self.output_dir, "lti_metrics.csv"), index=False)
             if self.logger:
                 self.logger.file_saved("LTI metrics data", len(self.lti_metrics_data))
+
+        if self.enable_per_packet_logging and self.per_packet_metrics_data:
+            per_packet_df = pd.DataFrame(self.per_packet_metrics_data)
+            per_packet_df.to_csv(
+                os.path.join(self.output_dir, "per_packet_metrics.csv"), index=False
+            )
+            if self.logger:
+                self.logger.file_saved(
+                    "Per-packet metrics data", len(self.per_packet_metrics_data)
+                )
         
         # Save speculated flow data (for speculative modes)
         # if self.speculated_flow_data:

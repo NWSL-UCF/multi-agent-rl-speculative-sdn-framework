@@ -23,6 +23,8 @@ from simulation.speculative import SpeculativeSimulation
 from simulation.speculativereactive import SpeculativeReactiveSimulation
 from simulation.reactive_optimal import ReactiveOptimalSimulation
 from simulation.speculative_reactive_optimal import SpeculativeReactiveOptimalSimulation
+from simulation.heuristic_speculativereactive import HeuristicSpeculativeReactiveSimulation
+from core.heuristic_learner import build_heuristic_learner
 from util.data_collector import DataCollector
 from util.logger import SDNLogger
 
@@ -134,6 +136,13 @@ def parse_arguments():
     # Combinatorial Bandit Parameters (used when --algorithm bandit)
     parser.add_argument('--bandit_c', type=float, default=1.0, help='Combinatorial bandit UCB exploration constant')
 
+    # Heuristic Parameters (used when --mode heuristicspeculativereactive)
+    parser.add_argument('--heuristic', type=str, default='hitcount',
+                       choices=['hitcount'],
+                       help='Heuristic used to rank speculative flows (heuristicspeculativereactive mode)')
+    parser.add_argument('--speculative_window_size', type=int, default=100,
+                       help='Number of recent LTIs kept in the heuristic sliding window')
+
     # Objective-driven parameter resolution
     parser.add_argument('--objective', type=str, default=None,
                        choices=['speculative_hitrate', 'speculativereactive_hitrate',
@@ -150,8 +159,8 @@ def parse_arguments():
     
     # SDN Mode
     parser.add_argument('--mode', type=str, default='speculativereactive', 
-                       choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal', 'speculativereactiveoptimal'],
-                       help='SDN mode: reactive, speculative, speculativereactive, reactiveoptimal, or speculativereactiveoptimal')
+                       choices=['reactive', 'speculative', 'speculativereactive', 'reactiveoptimal', 'speculativereactiveoptimal', 'heuristicspeculativereactive'],
+                       help='SDN mode: reactive, speculative, speculativereactive, reactiveoptimal, speculativereactiveoptimal, or heuristicspeculativereactive')
     
     # Device Configuration
     parser.add_argument('--device', type=str, default='cpu', 
@@ -180,6 +189,12 @@ def parse_arguments():
     parser.add_argument('--reset_age', type=float, default=1.0, help='Reset age for reactive flows')
     parser.add_argument('--speculative_reset_age', type=float, default=0.5, help='Reset age for speculative flows')
     parser.add_argument('--simulation_time', type=float, default=200.0, help='Simulation duration in seconds')
+
+    # Per-packet metrics logging
+    parser.add_argument('--enable_per_packet_logging', action='store_true',
+                       help='Enable per-packet delay metrics logging to per_packet_metrics.csv')
+    parser.add_argument('--switch_processing_rate', type=float, default=200_000_000,
+                       help='Switch packet processing rate (packets/s); mean switch delay is 1/rate')
     
     return parser.parse_args()
 
@@ -321,6 +336,19 @@ def main():
                                           switch_table,
                                           priority_policy,
                                           reward_function,
+                                          data_collector,
+                                          logger)
+            simulation.run(dataset, value)
+
+        elif args.mode == 'heuristicspeculativereactive':
+            heuristic_learner = build_heuristic_learner(args)
+            args.network_architecture = heuristic_learner.get_info()
+            simulation = HeuristicSpeculativeReactiveSimulation(args,
+                                          controller_table,
+                                          switch_table,
+                                          priority_policy,
+                                          reward_function,
+                                          heuristic_learner,
                                           data_collector,
                                           logger)
             simulation.run(dataset, value)
