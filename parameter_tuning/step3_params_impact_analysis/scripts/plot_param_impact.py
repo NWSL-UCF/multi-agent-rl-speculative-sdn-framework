@@ -9,9 +9,24 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 
 STEP3_DIR = Path(__file__).resolve().parents[1]
-RESULTS_ROOT = STEP3_DIR.parents[2] / "results" / "step3_param_impact"
+
+
+def _resolve_results_root() -> Path:
+    """Locate the step3 param-impact results across known layouts."""
+    candidates = [
+        STEP3_DIR.parents[1] / "results" / "step3_param_impact_analysis",
+        STEP3_DIR.parents[2] / "results" / "step3_param_impact",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
+
+RESULTS_ROOT = _resolve_results_root()
 DIRECTORY_JSON = STEP3_DIR / "directory.json"
 PLOTS_DIR = STEP3_DIR / "plots"
 
@@ -20,6 +35,50 @@ def param_plots_dir(param: str) -> Path:
     path = PLOTS_DIR / param
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+# Each panel is sized to match a panel of
+# step2_second_tuning_using_ternary_search/plots/ternary_search_best_trajectories.pdf
+# (figsize=(11.0, 4.1), 1x3 grid, left=0.08/right=0.98/bottom=0.14/top=0.86, wspace=0.06).
+PANEL_WIDTH_IN = 3.1731
+PANEL_HEIGHT_IN = 2.9520
+
+# Insets (inches) around the panel grid. bbox_inches="tight" trims any slack,
+# so these only need to be generous enough that labels never clip; the panel
+# box size and inter-panel gap below are what fix the per-panel dimensions.
+GRID_MARGIN_LEFT_IN = 0.62
+GRID_MARGIN_RIGHT_IN = 0.12
+GRID_MARGIN_BOTTOM_IN = 1.05
+GRID_MARGIN_TOP_IN = 0.48
+PANEL_GAP_IN = 0.72
+
+
+def make_panel_grid(
+    n_panels: int,
+    *,
+    sharex: bool = False,
+    sharey: bool = False,
+    panel_width: float = PANEL_WIDTH_IN,
+    panel_height: float = PANEL_HEIGHT_IN,
+    panel_gap: float = PANEL_GAP_IN,
+):
+    """Create a 1xN subplot grid whose every panel is exactly panel_width x panel_height."""
+    fig_w = (
+        GRID_MARGIN_LEFT_IN
+        + n_panels * panel_width
+        + (n_panels - 1) * panel_gap
+        + GRID_MARGIN_RIGHT_IN
+    )
+    fig_h = GRID_MARGIN_BOTTOM_IN + panel_height + GRID_MARGIN_TOP_IN
+    fig, axes = plt.subplots(1, n_panels, figsize=(fig_w, fig_h), sharex=sharex, sharey=sharey)
+    fig.subplots_adjust(
+        left=GRID_MARGIN_LEFT_IN / fig_w,
+        right=1.0 - GRID_MARGIN_RIGHT_IN / fig_w,
+        bottom=GRID_MARGIN_BOTTOM_IN / fig_h,
+        top=1.0 - GRID_MARGIN_TOP_IN / fig_h,
+        wspace=panel_gap / panel_width,
+    )
+    return fig, axes
 
 PANEL_ORDER = (
     "speculative_hitrate",
@@ -314,6 +373,10 @@ def plot_series_on_axes(
     objective: str,
     style: dict,
     param_values: list[float],
+    *,
+    star_color: str = BEST_STAR_COLOR,
+    star_edgecolor: str = "none",
+    star_edgewidth: float = 0.0,
 ) -> tuple[np.ndarray, np.ndarray, int, int]:
     x, y = load_series(param, objective, param_values)
     x_line, y_line, degree = poly_trend(x, y)
@@ -342,11 +405,136 @@ def plot_series_on_axes(
         y[best_idx],
         marker="*",
         markersize=STAR_MARKERSIZE,
-        color=BEST_STAR_COLOR,
+        color=star_color,
+        markeredgecolor=star_edgecolor,
+        markeredgewidth=star_edgewidth,
         linestyle="none",
         zorder=5,
     )
     return x, y, degree, best_idx
+
+
+# The two hit-rate objectives are drawn together in one dual-y-axis panel.
+MERGED_OBJECTIVES = ("speculative_hitrate", "speculativereactive_hitrate")
+MERGED_YLABELS = {
+    "speculative_hitrate": "Spec. Hit Rate (%)",
+    "speculativereactive_hitrate": "Spec.+Reac. Hit Rate (%)",
+}
+
+
+def _series_record(objective: str, algorithm: str, x: np.ndarray, y: np.ndarray, degree: int, best_idx: int) -> dict:
+    return {
+        "algorithm": algorithm,
+        "title": panel_title(objective, algorithm),
+        "param_values": x.tolist(),
+        "value": y.tolist(),
+        "trend_degree": degree,
+        "best_param_value": float(x[best_idx]),
+        "best_value": float(y[best_idx]),
+        "lowest_value": float(np.min(y)),
+        "highest_value": float(np.max(y)),
+        "difference": float(np.max(y) - np.min(y)),
+    }
+
+
+def _pad_axis_ylim(ax: plt.Axes, y: np.ndarray, *, frac: float = 0.12) -> None:
+    lo, hi = float(np.min(y)), float(np.max(y))
+    pad = max((hi - lo) * frac, 0.05)
+    ax.set_ylim(lo - pad, hi + pad)
+
+
+def plot_merged_hitrate_panel(
+    ax: plt.Axes,
+    param: str,
+    param_values: list[float],
+    data: dict,
+) -> None:
+    """Draw both hit-rate objectives on one panel using a twin (dual) y-axis."""
+    left_obj, right_obj = MERGED_OBJECTIVES
+    ax_right = ax.twinx()
+    target_axes = {left_obj: ax, right_obj: ax_right}
+    legend_handles: list[Line2D] = []
+
+    for objective in MERGED_OBJECTIVES:
+        style = SERIES[objective]
+        color = style["color"]
+        target = target_axes[objective]
+        algorithm = load_algorithm_from_args(param, objective)
+        x, y, degree, best_idx = plot_series_on_axes(
+            target,
+            param,
+            objective,
+            style,
+            param_values,
+            star_color=color,
+            star_edgecolor="white",
+            star_edgewidth=0.9,
+        )
+        _pad_axis_ylim(target, y)
+        record = _series_record(objective, algorithm, x, y, degree, best_idx)
+        data["series"][objective] = record
+
+        target.set_ylabel(MERGED_YLABELS[objective], color=color)
+        target.tick_params(axis="y", colors=color)
+        legend_handles.append(
+            Line2D(
+                [0],
+                [0],
+                color=color,
+                marker=MARKER,
+                markersize=7,
+                linestyle=(0, (6, 3)),
+                linewidth=1.4,
+                label=f"{record['title']}  (Δ={record['difference']:.2f}%)",
+            )
+        )
+    ax.spines["top"].set_visible(False)
+    ax_right.spines["top"].set_visible(False)
+    ax.spines["left"].set_color(SERIES[left_obj]["color"])
+    ax.spines["right"].set_visible(False)
+    ax_right.spines["right"].set_color(SERIES[right_obj]["color"])
+    ax_right.spines["left"].set_visible(False)
+
+    style_xaxis(ax, param, param_values, show_xlabel=True)
+    ax.grid(False)  # style_xaxis added both-axis grid; keep only vertical guides below
+    ax.grid(True, axis="x", linestyle=":", linewidth=0.8, alpha=0.8)
+    ax.set_axisbelow(True)
+
+    ax.legend(
+        handles=legend_handles,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 1.0),
+        frameon=False,
+        fontsize=11,
+        handlelength=1.6,
+        handletextpad=0.4,
+        borderaxespad=0.2,
+    )
+
+
+def _top_delta_legend(ax: plt.Axes, *, title: str, color: str, delta: float, is_hitrate: bool) -> None:
+    delta_suffix = "%" if is_hitrate else ""
+    ax.legend(
+        handles=[
+            Line2D(
+                [0],
+                [0],
+                color=color,
+                marker=MARKER,
+                markersize=7,
+                linestyle=(0, (6, 3)),
+                linewidth=1.4,
+                label=f"{title}  (Δ={delta:.2f}{delta_suffix})",
+            )
+        ],
+        loc="lower center",
+        bbox_to_anchor=(0.5, 1.0),
+        frameon=False,
+        fontsize=11,
+        handlelength=1.6,
+        handletextpad=0.4,
+        borderaxespad=0.2,
+    )
 
 
 def plot_param(param: str, *, directory: dict | None = None) -> Path:
@@ -354,32 +542,35 @@ def plot_param(param: str, *, directory: dict | None = None) -> Path:
     param_values = load_param_values(param, directory)
     data: dict[str, dict] = {"param": param, "series": {}}
 
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2), sharex=True)
+    fig, axes = make_panel_grid(2, sharex=True, panel_gap=1.6)
 
-    for ax, objective in zip(axes, PANEL_ORDER):
-        style = SERIES[objective]
-        algorithm = load_algorithm_from_args(param, objective)
-        title = panel_title(objective, algorithm)
-        x, y, degree, best_idx = plot_series_on_axes(ax, param, objective, style, param_values)
-        annotate_value_range(ax, y, corner=annotation_corner(param, objective))
-        data["series"][objective] = {
-            "algorithm": algorithm,
-            "title": title,
-            "param_values": x.tolist(),
-            "value": y.tolist(),
-            "trend_degree": degree,
-            "best_param_value": float(x[best_idx]),
-            "best_value": float(y[best_idx]),
-            "lowest_value": float(np.min(y)),
-            "highest_value": float(np.max(y)),
-            "difference": float(np.max(y) - np.min(y)),
-        }
-        ax.set_title(title, fontsize=14, fontweight="bold", pad=8)
-        ax.set_ylabel(style["ylabel"])
-        style_xaxis(ax, param, param_values, show_xlabel=True)
-        style_axes_spines(ax)
+    # Left panel: merged Spec. and Spec.+Reac. hit rate on a dual y-axis.
+    plot_merged_hitrate_panel(axes[0], param, param_values, data)
 
-    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.22, top=0.88, wspace=0.20)
+    # Right panel: speculation efficiency.
+    eff_objective = "speculation_efficiency"
+    eff_style = SERIES[eff_objective]
+    eff_color = eff_style["color"]
+    eff_algorithm = load_algorithm_from_args(param, eff_objective)
+    eff_title = panel_title(eff_objective, eff_algorithm)
+    x, y, degree, best_idx = plot_series_on_axes(
+        axes[1],
+        param,
+        eff_objective,
+        eff_style,
+        param_values,
+        star_color=eff_color,
+        star_edgecolor="white",
+        star_edgewidth=0.9,
+    )
+    record = _series_record(eff_objective, eff_algorithm, x, y, degree, best_idx)
+    data["series"][eff_objective] = record
+    _pad_axis_ylim(axes[1], y)
+    _top_delta_legend(axes[1], title=eff_title, color=eff_color, delta=record["difference"], is_hitrate=False)
+    axes[1].set_ylabel(eff_style["ylabel"])
+    style_xaxis(axes[1], param, param_values, show_xlabel=True)
+    style_axes_spines(axes[1])
+
     out_dir = param_plots_dir(param)
     out_base = out_dir / f"{param}_hitrate_spec_eff"
     fig.savefig(out_base.with_suffix(".png"), dpi=180, bbox_inches="tight", pad_inches=0.08)

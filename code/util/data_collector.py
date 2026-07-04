@@ -66,7 +66,34 @@ class DataCollector:
             getattr(args, "switch_processing_rate", 200_000_000)
         )
         self.per_packet_metrics_data = []
-        
+
+        # Per-LTI resource usage metrics (optional)
+        self.enable_resource_logging = bool(
+            getattr(args, "enable_resource_logging", False)
+        )
+        self.resource_num_cpus = float(getattr(args, "num_cpus", 1.0))
+        self.resource_total_ram_bytes = float(
+            getattr(args, "total_ram_gb", 8.0)
+        ) * (1024 ** 3)
+        self.lti_resource_metrics_data = []
+        self._resource_process = None
+        self._prev_cpu_time = None
+        self._prev_wall_time = None
+        self._prev_rss = None
+        if self.enable_resource_logging:
+            import time as _time
+
+            import psutil
+
+            self._resource_time = _time
+            self._resource_process = psutil.Process()
+            # Prime cpu_percent so the first per-LTI delta is meaningful.
+            cpu_times = self._resource_process.cpu_times()
+            self._prev_cpu_time = float(cpu_times.user + cpu_times.system)
+            self._prev_wall_time = _time.perf_counter()
+            # Baseline RSS used as the "start" sample for the first LTI average.
+            self._prev_rss = float(self._resource_process.memory_info().rss)
+
     def set_switch_table(self, switch_table):
         """Update the current switch table for LTI metrics"""
         self.switch_table = switch_table.copy()
@@ -211,6 +238,11 @@ class DataCollector:
         }
         
         self.lti_metrics_data.append(lti_metrics)
+
+        if self.enable_resource_logging:
+            self._record_lti_resource_metric(
+                self.current_lti, lti_start_time, lti_end_time
+            )
         
         # Reset LTI counters for next interval
         self.lti_packets = 0
@@ -225,7 +257,62 @@ class DataCollector:
         self.lti_total_reward = 0.0
         
         self.current_lti += 1
-    
+
+    def _record_lti_resource_metric(self, lti_number, lti_start_time, lti_end_time):
+        """Sample process CPU and memory usage for the just-completed LTI.
+
+        CPU utilisation is derived from the change in consumed CPU time over the
+        wall-clock elapsed since the previous sample, which is far more stable
+        than an instantaneous reading for the very short early LTIs.
+        """
+        process = self._resource_process
+        mem_info = process.memory_info()
+
+        cpu_times = process.cpu_times()
+        cpu_time_now = float(cpu_times.user + cpu_times.system)
+        wall_now = self._resource_time.perf_counter()
+
+        cpu_time_delta = cpu_time_now - self._prev_cpu_time
+        wall_time_delta = wall_now - self._prev_wall_time
+        # Average CPU utilisation over the LTI, normalised to the CPU allocation.
+        if wall_time_delta > 0 and self.resource_num_cpus > 0:
+            cpu_utilization_percent = (
+                cpu_time_delta / (wall_time_delta * self.resource_num_cpus)
+            ) * 100.0
+        else:
+            cpu_utilization_percent = 0.0
+
+        # Average RSS over the LTI, approximated from the start/end boundary samples.
+        cur_rss = float(mem_info.rss)
+        avg_rss = (self._prev_rss + cur_rss) / 2.0 if self._prev_rss is not None else cur_rss
+        ram_utilization_percent = (
+            (avg_rss / self.resource_total_ram_bytes) * 100.0
+            if self.resource_total_ram_bytes > 0
+            else 0.0
+        )
+
+        import resource as _resource
+
+        peak_rss_kb = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+
+        self.lti_resource_metrics_data.append({
+            "lti_number": lti_number,
+            "lti_start_time": lti_start_time,
+            "lti_end_time": lti_end_time,
+            "avg_rss_mb": avg_rss / (1024 ** 2),
+            "ram_utilization_percent": ram_utilization_percent,
+            "cpu_utilization_percent": cpu_utilization_percent,
+            "rss_mb": cur_rss / (1024 ** 2),
+            "vms_mb": mem_info.vms / (1024 ** 2),
+            "peak_rss_mb": peak_rss_kb / 1024.0,
+            "cpu_time_s_delta": cpu_time_delta,
+            "wall_time_s_delta": wall_time_delta,
+        })
+
+        self._prev_cpu_time = cpu_time_now
+        self._prev_wall_time = wall_now
+        self._prev_rss = cur_rss
+
     def _collect_metrics(self, timestamp, is_speculative=False):
         """Collect performance metrics at regular intervals"""
         # Calculate hit rate
@@ -299,6 +386,16 @@ class DataCollector:
             if self.logger:
                 self.logger.file_saved(
                     "Per-packet metrics data", len(self.per_packet_metrics_data)
+                )
+
+        if self.enable_resource_logging and self.lti_resource_metrics_data:
+            resource_df = pd.DataFrame(self.lti_resource_metrics_data)
+            resource_df.to_csv(
+                os.path.join(self.output_dir, "lti_resource_metrics.csv"), index=False
+            )
+            if self.logger:
+                self.logger.file_saved(
+                    "LTI resource metrics data", len(self.lti_resource_metrics_data)
                 )
         
         # Save speculated flow data (for speculative modes)

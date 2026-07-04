@@ -195,6 +195,14 @@ def parse_arguments():
                        help='Enable per-packet delay metrics logging to per_packet_metrics.csv')
     parser.add_argument('--switch_processing_rate', type=float, default=200_000_000,
                        help='Switch packet processing rate (packets/s); mean switch delay is 1/rate')
+
+    # Per-LTI resource usage logging
+    parser.add_argument('--enable_resource_logging', action='store_true',
+                       help='Enable per-LTI CPU/memory usage logging to lti_resource_metrics.csv')
+    parser.add_argument('--num_cpus', type=float, default=1.0,
+                       help='Number of CPU cores allocated; used to normalise per-LTI CPU utilisation to 0-100%%')
+    parser.add_argument('--total_ram_gb', type=float, default=8.0,
+                       help='Total RAM allocation in GB; used to normalise per-LTI RAM utilisation to 0-100%%')
     
     return parser.parse_args()
 

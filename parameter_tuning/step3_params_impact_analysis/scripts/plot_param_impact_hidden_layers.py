@@ -5,13 +5,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
+_SCRIPT_DIR = Path(__file__).resolve().parent
+if str(_SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPT_DIR))
+
+from plot_param_impact import RESULTS_ROOT, make_panel_grid
+
 STEP3_DIR = Path(__file__).resolve().parents[1]
-RESULTS_ROOT = STEP3_DIR.parents[2] / "results" / "step3_param_impact"
 PLOTS_DIR = STEP3_DIR / "plots"
 HIDDEN_LAYERS_PLOTS_DIR = PLOTS_DIR / "hidden_layers"
 
@@ -22,9 +28,13 @@ VARIANT_COLORS = {"fixed": "#E8A317", "interpolated": "#4CAF50"}
 BAR_HATCH = "////"
 BAR_EDGE = "black"
 BAR_EDGEWIDTH = 0.8
-BAR_WIDTH_INCHES = 0.13
-GROUP_SPACING = 0.52
-X_PAD = 0.12
+BAR_WIDTH_INCHES = 0.11
+GROUP_SPACING = 0.14
+X_PAD = 0.07
+
+# Bar panels only need room for 3 tight bar groups, so they are narrower than the
+# line-plot panels while keeping the shared (ternary-matched) panel height.
+HL_PANEL_WIDTH_IN = 1.55
 
 PANELS = (
     {
@@ -203,12 +213,11 @@ NFA_VALUES = (5, 8)
 def plot_hidden_layers(nfa: int) -> Path:
     data: dict = {"numberofFlowsPerAgent": nfa, "panels": {}}
 
-    fig, axes = plt.subplots(1, 2, figsize=(5.0, 3.0))
+    fig, axes = make_panel_grid(2, panel_width=HL_PANEL_WIDTH_IN)
     panel_cfgs = [panel_for_nfa(panel, nfa) for panel in PANELS]
     for ax, panel_cfg in zip(axes, panel_cfgs):
         prepare_panel_axes(ax, panel_cfg, show_ylabel=True)
 
-    fig.subplots_adjust(left=0.10, right=0.98, bottom=0.16, top=0.96, wspace=0.58)
     fig.canvas.draw()
 
     for ax, panel, panel_cfg, show_legend in zip(axes, PANELS, panel_cfgs, (True, False)):
@@ -236,7 +245,7 @@ def plot_hidden_layers(nfa: int) -> Path:
 def plot_hidden_layers_combined() -> Path:
     data: dict = {"numberofFlowsPerAgent": list(NFA_VALUES), "series": {}}
 
-    fig, axes = plt.subplots(1, 4, figsize=(10.0, 3.0))
+    fig, axes = make_panel_grid(4, panel_width=HL_PANEL_WIDTH_IN)
     plot_specs = [
         (PANELS[0], NFA_VALUES[0], 0),
         (PANELS[0], NFA_VALUES[1], 1),
@@ -252,7 +261,6 @@ def plot_hidden_layers_combined() -> Path:
             title=f"$U$ = {nfa}",
         )
 
-    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.16, top=0.88, wspace=0.58)
     fig.canvas.draw()
 
     for panel, nfa, col in plot_specs:
