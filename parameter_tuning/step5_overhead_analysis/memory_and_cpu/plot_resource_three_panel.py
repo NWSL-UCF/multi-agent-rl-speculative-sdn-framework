@@ -132,7 +132,7 @@ def plot_three_panel() -> Path:
                     fmt.format(value), ha="center", va="bottom", fontsize=13)
 
     draw_box(ax_rss, rss_data, labels, colors,
-             "Avg RSS (MB)", "RSS", ylim=(500, 880))
+             "RSS (MB)", "RSS", ylim=(500, 880))
     draw_bar(ax_peak, peak_values, "Peak RSS (MB)", "Peak RSS", "{:.0f}", ylim=(500, 880))
     draw_bar(ax_cpu, cpu_seconds, "Total CPU Time (s)", "Total CPU Time", "{:.1f}")
 
