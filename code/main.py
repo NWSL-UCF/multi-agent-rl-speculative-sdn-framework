@@ -188,7 +188,10 @@ def parse_arguments():
     # Simulation Constants
     parser.add_argument('--reset_age', type=float, default=1.0, help='Reset age for reactive flows')
     parser.add_argument('--speculative_reset_age', type=float, default=0.5, help='Reset age for speculative flows')
-    parser.add_argument('--simulation_time', type=float, default=200.0, help='Simulation duration in seconds')
+    parser.add_argument('--trace_start_time', type=float, default=0.0,
+                       help='Trace timestamp (seconds) at which packet replay begins')
+    parser.add_argument('--simulation_time', type=float, default=200.0,
+                       help='Simulation duration in seconds; replay runs from trace_start_time to trace_start_time + simulation_time')
 
     # Per-packet metrics logging
     parser.add_argument('--enable_per_packet_logging', action='store_true',

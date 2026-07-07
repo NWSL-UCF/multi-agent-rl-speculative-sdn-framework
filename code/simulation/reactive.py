@@ -1,5 +1,7 @@
 import pandas as pd
 from collections import deque
+
+from util.trace_window import should_stop_simulation
 class ReactiveSimulation:
     def __init__(self, args, controller_table, switch_table, priority_policy, reward_function, data_collector, logger=None):
         self.args = args
@@ -237,15 +239,7 @@ class ReactiveSimulation:
     
     def _should_stop_simulation(self, value):
         """Check if simulation should stop"""
-        if self.packet_counter >= len(value) - 1:
-            return True
-            
-        current_time = float(value.iloc[self.packet_counter].iloc[0])
-        
-        # Check against simulation time limit
-        return current_time > self.args.simulation_time
-            
-        return False
+        return should_stop_simulation(self.args, value, self.packet_counter)
     
     def _update_performance_metrics(self, value):
         """Update performance tracking metrics"""

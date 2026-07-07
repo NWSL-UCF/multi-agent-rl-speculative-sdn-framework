@@ -1,6 +1,7 @@
 import pandas as pd
 
 from simulation.reactive_optimal import ReactiveOptimalSimulation
+from util.trace_window import get_replay_start_time, should_stop_simulation
 
 
 class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
@@ -125,7 +126,7 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
             self.last_metrics_time = packet_time
 
     def _remove_flows_without_future_packets(self, current_time):
-        """Remove SFT entries for flows with no future packets within simulation_time"""
+        """Remove SFT entries for flows with no future packets within the replay window"""
         flows_to_remove = []
         for _, row in self.switch_table.iterrows():
             flow_key = (row['Source'], row['Destination'])
@@ -196,11 +197,7 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
 
     def _should_stop_simulation(self, value):
         """Check if simulation should stop"""
-        if self.packet_counter >= len(value) - 1:
-            return True
-
-        current_time = float(value.iloc[self.packet_counter].iloc[0])
-        return current_time > self.args.simulation_time
+        return should_stop_simulation(self.args, value, self.packet_counter)
 
     def _last_processed_time(self, value):
         """Return timestamp of the most recently processed packet"""
@@ -220,8 +217,9 @@ class SpeculativeReactiveOptimalSimulation(ReactiveOptimalSimulation):
 
         self._precompute_future_packet_times(dataset, value)
 
-        self.lti_start_time = 0.0
-        self.last_metrics_time = 0.0
+        replay_start_time = get_replay_start_time(value)
+        self.lti_start_time = replay_start_time
+        self.last_metrics_time = replay_start_time
         lti_maintenance_start_packet = 0
         self.trace_counter = 0
 

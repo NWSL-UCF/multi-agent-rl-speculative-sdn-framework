@@ -32,8 +32,10 @@ class DataLoader:
         
         # Create switch table
         switch_table = self._create_switch_table()
+
+        replay_dataset, replay_value = self._prepare_replay_data(dataset, value)
         
-        return controller_table, switch_table, dataset, value
+        return controller_table, switch_table, replay_dataset, replay_value
     
     def _load_dataset_file(self, filename):
         """Load dataset file with simple path handling"""
@@ -82,6 +84,34 @@ class DataLoader:
         
         return controller_table.reset_index(drop=True)
     
+    def _prepare_replay_data(self, dataset, value):
+        """Slice packet replay to [trace_start_time, trace_start_time + simulation_time].
+
+        Controller-table generation uses the full trace; only replay data is windowed.
+        """
+        trace_start = float(getattr(self.args, "trace_start_time", 0.0))
+        sim_end = trace_start + float(self.args.simulation_time)
+
+        time_col = value.iloc[:, 0].astype(float)
+        mask = time_col >= trace_start
+        replay_dataset = dataset.loc[mask].reset_index(drop=True)
+        replay_value = value.loc[mask].reset_index(drop=True)
+
+        if replay_dataset.empty:
+            raise ValueError(
+                f"No packets found at or after trace_start_time={trace_start}. "
+                f"Trace time range is [{time_col.min():.6f}, {time_col.max():.6f}]."
+            )
+
+        if self.logger:
+            replay_end = float(replay_value.iloc[-1].iloc[0])
+            self.logger.info(
+                f"Replay window: {trace_start:.6f}s to {sim_end:.6f}s "
+                f"({len(replay_dataset)} packets, last packet at {replay_end:.6f}s)"
+            )
+
+        return replay_dataset, replay_value
+
     def _create_switch_table(self):
         """Create switch table with clear column structure"""
         switch_table = pd.DataFrame({
