@@ -475,3 +475,7 @@ results/                            # Local run outputs (not in repo)
 ```
 
 For the full paper experiment archive, see [Paper Experimental Results](#paper-experimental-results) above.
+
+---
+
+*Last updated: July 9, 2026*
