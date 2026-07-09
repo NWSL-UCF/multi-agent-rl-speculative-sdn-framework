@@ -46,7 +46,7 @@ python main.py \
   --base_path ../results/my_run
 ```
 
-> **Local vs cluster runs:** `main.py` sets `ENABLE_JD = True` by default, which routes output through [JobDistributor](https://jobdistributor.net/) via the [`jd-worker`](https://pypi.org/project/jd-worker/) library when running large-scale experiments on a cluster. For local development, set `ENABLE_JD = False` at the top of `code/main.py` so results are written to `--base_path`.
+> **Local vs cluster runs:** `main.py` sets `ENABLE_JD = False` by default, so results are written to `--base_path`. For large-scale cluster runs via [JobDistributor](https://jobdistributor.net/), set `ENABLE_JD = True` at the top of `code/main.py`.
 
 ---
 
@@ -85,9 +85,9 @@ The paper's 124,659-run parameter study was orchestrated with [JobDistributor](h
 1. Sign up and create an experiment at [jobdistributor.net](https://jobdistributor.net/)
 2. Install the worker on each compute node: `pip install jd-worker`
 3. Run workers pointing at `code/main.py` as the entry script (see `parameter_tuning/` for batch scripts)
-4. Keep `ENABLE_JD = True` in `code/main.py` so each job writes results to its JobDistributor job directory and uploads `summary.json` / `lti_metrics.csv` automatically
+4. Set `ENABLE_JD = True` in `code/main.py` so each job writes results to its JobDistributor job directory and uploads `summary.json` / `lti_metrics.csv` automatically
 
-For single-machine local runs, set `ENABLE_JD = False` and use `--base_path` instead.
+For single-machine local runs, keep `ENABLE_JD = False` (default) and use `--base_path`.
 
 ---
 
@@ -248,7 +248,7 @@ Run `python main.py --help` for the full list. Options are grouped below by purp
 | Argument | Default | Description |
 |---|---|---|
 | `--pcap_base_path` | `<repo>/Pcap` | Directory containing `1.csv`, `2.csv`, `3.csv` |
-| `--base_path` | `<repo>/results/debug` | Output directory (used when `ENABLE_JD = False`) |
+| `--base_path` | `<repo>/results/debug` | Output directory (default when `ENABLE_JD = False`) |
 | `--device` | `cpu` | `auto`, `cpu`, `cuda`, `cuda:0`, `cuda:1` |
 
 ### Shared learner parameters
