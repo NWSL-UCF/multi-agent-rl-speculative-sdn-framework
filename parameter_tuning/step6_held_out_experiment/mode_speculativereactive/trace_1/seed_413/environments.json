@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-07-07T20:10:52.543140",
+  "python_version": "3.8.6",
+  "python_executable": "/ocean/projects/cis250065p/arouf/multi-agent-rl-speculative-sdn-framework/venv/bin/python3",
+  "requirements_file": "/ocean/projects/cis250065p/arouf/multi-agent-rl-speculative-sdn-framework/requirements.txt",
+  "compute": {
+    "cuda_available": false,
+    "device": "cpu",
+    "cuda_version": "12.1",
+    "gpu_name": null,
+    "cudnn_version": null
+  },
+  "packages": {
+    "numpy": "1.24.4",
+    "pandas": "2.0.3",
+    "psutil": "7.2.2",
+    "torch": "2.4.1",
+    "matplotlib": "3.7.5",
+    "wandb": "0.24.2",
+    "argparse": "1.4.0",
+    "flask": "3.0.3",
+    "requests": "2.32.4",
+    "bloom-filter": "1.3.3",
+    "mmh3": "5.0.1",
+    "bitarray": "3.8.1",
+    "jd-worker": "1.29.0"
+  },
+  "missing_packages": []
+}
